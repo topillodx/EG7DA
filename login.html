@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Login EG7DA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
+    authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
+    databaseURL: "https://eg7da-dia-de-andalucia-default-rtdb.firebaseio.com",
+    projectId: "eg7da-dia-de-andalucia",
+    storageBucket: "eg7da-dia-de-andalucia.firebasestorage.app",
+    messagingSenderId: "100328196767",
+    appId: "1:100328196767:web:d6a847a4a9f15c7eac70aa"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  window.login = async () => {
+    const email = document.getElementById("email").value;
+    const pass  = document.getElementById("password").value;
+    const error = document.getElementById("error");
+
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const uid = cred.user.uid;
+
+      // Recuperar indicativo
+      const snap = await get(ref(db, "users/" + uid));
+
+      if (!snap.exists()) {
+        error.innerText = "Usuario sin indicativo asignado";
+        error.style.display = "block";
+        return;
+      }
+
+      const indicativo = snap.val().indicativo;
+
+      // Guardar sesión
+      localStorage.setItem("uid", uid);
+      localStorage.setItem("indicativo", indicativo);
+
+      window.location.href = "index.html";
+
+    } catch (e) {
+      error.innerText = "Login incorrecto";
+      error.style.display = "block";
+    }
+  };
+</script>
+
+<style>
+body{
+  background:#0a5c2f;
+  font-family:Segoe UI,Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+  text-align:center;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+}
+button{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  background:#003087;
+  color:white;
+  border:none;
+  font-size:1em;
+  cursor:pointer;
+}
+#error{
+  color:red;
+  margin-top:10px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Login EG7DA</h2>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Contraseña">
+  <button onclick="login()">Entrar</button>
+  <div id="error"></div>
+</div>
+
+</body>
+</html>

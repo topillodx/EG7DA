@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro EG7DA</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    body{
+      background:#0d1b2a;
+      color:#fff;
+      font-family:Arial;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+    .box{
+      background:#1b263b;
+      padding:30px;
+      border-radius:10px;
+      width:320px;
+      text-align:center;
+    }
+    input,button{
+      width:100%;
+      margin:8px 0;
+      padding:10px;
+      border-radius:5px;
+      border:none;
+    }
+    button{
+      background:#f4a261;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .error{
+      color:#ff6b6b;
+      display:none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Registro EG7DA</h2>
+
+  <input id="regIndicativo" placeholder="Indicativo (EA7XXX)">
+  <input id="regEmail" type="email" placeholder="Email">
+  <input id="regPass" type="password" placeholder="Contraseña">
+
+  <button onclick="register()">Registrar</button>
+  <div id="error" class="error"></div>
+
+  <p><a href="login.html" style="color:#f4a261">Volver a login</a></p>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
+    authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
+    databaseURL: "https://eg7da-dia-de-andalucia-default-rtdb.firebaseio.com",
+    projectId: "eg7da-dia-de-andalucia",
+    storageBucket: "eg7da-dia-de-andalucia.appspot.com",
+    messagingSenderId: "100328196767",
+    appId: "1:100328196767:web:d6a847a4a9f15c7eac70aa"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  function register(){
+    const indicativo = document.getElementById("regIndicativo").value.toUpperCase();
+    const email = document.getElementById("regEmail").value;
+    const pass = document.getElementById("regPass").value;
+    const error = document.getElementById("error");
+
+    if(!indicativo || !email || !pass){
+      error.innerText = "Rellena todos los campos";
+      error.style.display = "block";
+      return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(cred=>{
+        return db.ref("users/"+cred.user.uid).set({
+          indicativo: indicativo,
+          email: email
+        });
+      })
+      .then(()=>{
+        alert("Registro correcto. Ya puedes iniciar sesión.");
+        window.location.href = "login.html";
+      })
+      .catch(err=>{
+        error.innerText = err.message;
+        error.style.display = "block";
+      });
+  }
+</script>
+
+</body>
+</html>

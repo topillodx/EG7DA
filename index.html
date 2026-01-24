@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EG7DA – Día de Andalucía</title>
+<style>
+/* ===== BODY ===== */
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#0a5c2f,#1c8a4a);
+}
+header img{width:100%;display:block}
+
+/* ===== UTC ===== */
+#utc{
+  background:#003087;
+  color:white;
+  text-align:center;
+  font-size:1.4em;
+  font-weight:bold;
+  padding:10px;
+}
+
+/* ===== MAIN ===== */
+main{
+  max-width:1400px;
+  margin:auto;
+  background:white;
+  padding:25px;
+  box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+
+/* ===== TABLA ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:25px;
+}
+th{
+  background:#1a6aff;
+  color:white;
+  padding:12px;
+  font-size:1.2em;
+}
+td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+  background:#f2ffcc;
+  cursor:pointer;
+  font-size:.85em;
+  min-width:90px;
+}
+td.banda{
+  background:#c2c2ef;
+  font-weight:bold;
+  cursor:default;
+  font-size:1.8em;
+  color:#ff0000;
+}
+td:hover{background:#ffff66;transform:scale(1.03);transition:.15s}
+td.activo{background:#ff8080;font-weight:bold}
+
+footer{
+  text-align:center;
+  padding:18px;
+  background:#003087;
+  color:white;
+  margin-top:30px;
+}
+
+/* ===== LOGIN & REGISTER ===== */
+#loginOverlay, #registerOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.overlay-box{
+  background:white;
+  padding:35px;
+  border-radius:12px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+}
+.overlay-box input{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  font-size:1em;
+}
+.overlay-box button{
+  margin-top:18px;
+  padding:12px;
+  width:100%;
+  background:#00cc66;
+  color:white;
+  border:none;
+  font-size:1.1em;
+  cursor:pointer;
+}
+
+/* ===== MODAL ===== */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+}
+.modal-content{
+  background:white;
+  max-width:280px;
+  margin:10% auto;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+.modal-content h3{
+  margin:0 0 8px 0;
+  font-size:1.1em;
+  color:#0a5c2f;
+}
+.modal-content input{
+  width:100%;
+  padding:7px;
+  margin-top:6px;
+  font-size:1.05em;
+}
+#selectedMode{
+  font-weight:bold;
+  margin-top:10px;
+  font-size:1em;
+}
+td.activo strong { font-size:1.2em; }
+td.activo em { font-size:1.2em; }
+.modal-content button{
+  margin-top:8px;
+  padding:8px;
+  width:100%;
+  border:none;
+  cursor:pointer;
+  background:#0a5c2f;
+  color:white;
+}
+.modal-content .red{background:#c0392b}
+.mode-btn{
+  padding:5px 7px;
+  margin:3px;
+  font-size:.8em;
+  border:none;
+  background:#003087;
+  color:white;
+  cursor:pointer;
+  border-radius:5px;
+}
+.mode-btn:hover{background:#0050c8}
+
+/* ===== TITULOS 3D + BANDERAS ===== */
+.titulo-container{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin-top:10px;
+}
+.bandera{
+  width:70px;
+  height:auto;
+  filter: drop-shadow(3px 3px 5px rgba(0,0,0,.45));
+  animation:ondear 3s ease-in-out infinite;
+}
+.titulo-3d{
+  font-size:3.8em;
+  font-weight:900;
+  letter-spacing:4px;
+  margin:0;
+  color:#1e7f3b;
+  text-shadow:
+    1px 1px 0 #145a2a,
+    2px 2px 0 #145a2a,
+    3px 3px 0 #145a2a,
+    4px 4px 0 #0a3d1c,
+    6px 6px 14px rgba(0,0,0,.45);
+  animation:glow 3s infinite ease-in-out;
+}
+.titulo-3d span{color:#ffd966;}
+.subtitulo-3d{
+  text-align:center;
+  font-size:1.9em;
+  font-weight:800;
+  letter-spacing:2px;
+  margin-top:6px;
+  background:linear-gradient(90deg,#0a5c2f,#ffffff,#0a5c2f);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:1px 1px 0 rgba(0,0,0,.3),3px 3px 6px rgba(0,0,0,.35);
+}
+@keyframes glow{
+  0%{text-shadow:0 0 8px rgba(255,255,255,.3)}
+  50%{text-shadow:0 0 16px rgba(255,255,255,.6)}
+  100%{text-shadow:0 0 8px rgba(255,255,255,.3)}
+}
+@media(max-width:768px){
+  .titulo-3d{font-size:2.6em}
+  .subtitulo-3d{font-size:1.4em}
+  .bandera{width:48px}
+}
+@keyframes ondear {
+  0%   { transform: rotate(0deg) translateY(0); }
+  25%  { transform: rotate(1deg) translateY(-2px); }
+  50%  { transform: rotate(0deg) translateY(0); }
+  75%  { transform: rotate(-1deg) translateY(2px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div id="utc">Hora UTC: --:--:--</div>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="overlay-box">
+    <h2>Login EG7DA</h2>
+    <input id="loginUser" placeholder="Email">
+    <input id="loginPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter'){loginUser()}">
+    <button onclick="loginUser()">Entrar</button>
+    <p id="loginError" style="color:red; display:none"></p>
+    <p>¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate</a></p>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="registerOverlay" style="display:none;">
+  <div class="overlay-box">
+    <h2>Registro EG7DA</h2>
+    <input id="regEmail" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password">
+    <input id="regUser" placeholder="Indicativo">
+    <button onclick="registerUser()">Registrar</button>
+    <p id="regError" style="color:red; display:none"></p>
+    <p>¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a></p>
+  </div>
+</div>
+
+<header>
+  <img src="RADIO CLUB SEVILLA.JPG" alt="Radio Club Sevilla">
+</header>
+
+<main>
+<div style="text-align:right; max-width:1400px; margin:auto; padding:10px;">
+  <button id="logoutBtn" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
+</div>
+
+<div class="titulo-container">
+  <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">
+  <h1 class="titulo-3d">EG<span>7</span>DA</h1>
+  <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">
+</div>
+<h2 class="subtitulo-3d">Día de Andalucía</h2>
+
+<!-- TABLA DE BANDAS -->
+<table>
+<tr>
+  <th>BANDA</th>
+  <th>CW</th>
+  <th>SSB</th>
+  <th>DIG1</th>
+  <th>DIG2</th>
+</tr>
+<tr><td class="banda">80 m</td><td onclick="openForm(this)" data-band="80-CW"></td><td onclick="openForm(this)" data-band="80-SSB"></td><td onclick="openForm(this)" data-band="80-DIG1"></td><td onclick="openForm(this)" data-band="80-DIG2"></td></tr>
+<tr><td class="banda">60 m</td><td onclick="openForm(this)" data-band="60-CW"></td><td onclick="openForm(this)" data-band="60-SSB"></td><td onclick="openForm(this)" data-band="60-DIG1"></td><td onclick="openForm(this)" data-band="60-DIG2"></td></tr>
+<tr><td class="banda">40 m</td><td onclick="openForm(this)" data-band="40-CW"></td><td onclick="openForm(this)" data-band="40-SSB"></td><td onclick="openForm(this)" data-band="40-DIG1"></td><td onclick="openForm(this)" data-band="40-DIG2"></td></tr>
+<tr><td class="banda">30 m</td><td onclick="openForm(this)" data-band="30-CW"></td><td onclick="openForm(this)" data-band="30-SSB"></td><td onclick="openForm(this)" data-band="30-DIG1"></td><td onclick="openForm(this)" data-band="30-DIG2"></td></tr>
+<tr><td class="banda">20 m</td><td onclick="openForm(this)" data-band="20-CW"></td><td onclick="openForm(this)" data-band="20-SSB"></td><td onclick="openForm(this)" data-band="20-DIG1"></td><td onclick="openForm(this)" data-band="20-DIG2"></td></tr>
+<tr><td class="banda">17 m</td><td onclick="openForm(this)" data-band="17-CW"></td><td onclick="openForm(this)" data-band="17-SSB"></td><td onclick="openForm(this)" data-band="17-DIG1"></td><td onclick="openForm(this)" data-band="17-DIG2"></td></tr>
+<tr><td class="banda">15 m</td><td onclick="openForm(this)" data-band="15-CW"></td><td onclick="openForm(this)" data-band="15-SSB"></td><td onclick="openForm(this)" data-band="15-DIG1"></td><td onclick="openForm(this)" data-band="15-DIG2"></td></tr>
+<tr><td class="banda">12 m</td><td onclick="openForm(this)" data-band="12-CW"></td><td onclick="openForm(this)" data-band="12-SSB"></td><td onclick="openForm(this)" data-band="12-DIG1"></td><td onclick="openForm(this)" data-band="12-DIG2"></td></tr>
+<tr><td class="banda">10 m</td><td onclick="openForm(this)" data-band="10-CW"></td><td onclick="openForm(this)" data-band="10-SSB"></td><td onclick="openForm(this)" data-band="10-DIG1"></td><td onclick="openForm(this)" data-band="10-DIG2"></td></tr>
+<tr><td class="banda">6 m</td><td onclick="openForm(this)" data-band="6-CW"></td><td onclick="openForm(this)" data-band="6-SSB"></td><td onclick="openForm(this)" data-band="6-DIG1"></td><td onclick="openForm(this)" data-band="6-DIG2"></td></tr>
+<tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
+</table>
+
+<div style="border:4px solid #003087;border-radius:12px;overflow:hidden;margin-top:35px">
+<iframe src="https://clublog.org/livestream/EG7DA" width="100%" height="600" style="border:none;"></iframe>
+</div>
+
+</main>
+<footer>© By TOPILLODX</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Datos de transmisión</h3>
+    <input id="qrz" disabled>
+    <input id="freq" placeholder="Frecuencia MHz">
+    <div>
+      <button class="mode-btn" onclick="setMode('CW')">CW</button>
+      <button class="mode-btn" onclick="setMode('SSB')">SSB</button>
+      <button class="mode-btn" onclick="setMode('FT8')">FT8</button>
+      <button class="mode-btn" onclick="setMode('FT4')">FT4</button>
+      <button class="mode-btn" onclick="setMode('RTTY')">RTTY</button>
+      <button class="mode-btn" onclick="setMode('PSK')">PSK</button>
+    </div>
+    <p id="selectedMode">Modo: —</p>
+    <button onclick="saveCell()">Guardar</button>
+    <button class="red" onclick="clearCell()">Liberar banda</button>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
+  authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
+  databaseURL: "https://eg7da-dia-de-andalucia-default-rtdb.firebaseio.com",
+  projectId: "eg7da-dia-de-andalucia",
+  storageBucket: "eg7da-dia-de-andalucia.firebasestorage.app",
+  messagingSenderId: "100328196767",
+  appId: "1:100328196767:web:d6a847a4a9f15c7eac70aa"
+};
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.database();
+
+let currentUser='', currentCell=null, currentMode='';
+
+// FUNCIONES LOGIN/REGISTER
+function showRegister(){
+  document.getElementById("loginOverlay").style.display='none';
+  document.getElementById("registerOverlay").style.display='flex';
+}
+function showLogin(){
+  document.getElementById("registerOverlay").style.display='none';
+  document.getElementById("loginOverlay").style.display='flex';
+}
+
+function registerUser(){
+  const email = document.getElementById("regEmail").value;
+  const pass = document.getElementById("regPass").value;
+  const indicativo = document.getElementById("regUser").value.toUpperCase();
+
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then((cred)=>{
+      const uid = cred.user.uid;
+
+      return db.ref("users/" + uid).set({
+        email: email,
+        indicativo: indicativo
+      });
+    })
+    .then(()=>{
+      alert("Usuario registrado correctamente. Inicia sesión.");
+      showLogin();
+    })
+    .catch(err=>{
+      const regError = document.getElementById("regError");
+      regError.innerText = err.message;
+      regError.style.display = 'block';
+    });
+}
+
+function loginUser(){
+  const email = document.getElementById("loginUser").value;
+  const pass = document.getElementById("loginPass").value;
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then((cred)=>{
+      const uid = cred.user.uid;
+
+      return db.ref("users/" + uid).once("value");
+    })
+    .then(snapshot=>{
+      const data = snapshot.val();
+      currentUser = data.indicativo;
+
+      document.getElementById("loginOverlay").style.display = 'none';
+      localStorage.setItem("loginTime", Date.now());
+    })
+    .catch(err=>{
+      const loginError = document.getElementById("loginError");
+      loginError.innerText = err.message;
+      loginError.style.display = 'block';
+    });
+}
+
+
+// Mantener sesión 12h
+const storedTime = localStorage.getItem("loginTime");
+if(storedTime && Date.now()-storedTime < 12*60*60*1000){
+  document.getElementById("loginOverlay").style.display='none';
+}
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+  auth.signOut();
+  currentUser='';
+  localStorage.removeItem("loginTime");
+  document.getElementById("loginOverlay").style.display='flex';
+});
+
+// MODAL TABLA
+function openForm(cell){
+  currentCell=cell;
+  currentMode='';
+  document.getElementById("qrz").value=currentUser;
+  document.getElementById("freq").value='';
+  document.getElementById("selectedMode").innerText='Modo: —';
+  document.getElementById("modal").style.display='block';
+}
+function setMode(m){ currentMode=m; document.getElementById("selectedMode").innerText='Modo: '+m; }
+function saveCell(){
+  if(!document.getElementById("freq").value||!currentMode){alert('Indica frecuencia y modo');return;}
+  currentCell.innerHTML='<strong>'+currentUser+'</strong><br>'+document.getElementById("freq").value+' MHz<br><em>'+currentMode+'</em>';
+  currentCell.classList.add('activo');
+  document.getElementById("modal").style.display='none';
+}
+function clearCell(){
+  currentCell.innerHTML=''; currentCell.classList.remove('activo'); document.getElementById("modal").style.display='none';
+}
+
+// UTC
+setInterval(()=>{document.getElementById("utc").innerText='Hora UTC: '+new Date().toUTCString().slice(17,25)},1000);
+</script>
+<script>
+auth.onAuthStateChanged(user=>{
+  if(user){
+    db.ref("users/" + user.uid).once("value").then(snap=>{
+      if(snap.exists()){
+        currentUser = snap.val().indicativo;
+        document.getElementById("loginOverlay").style.display='none';
+      }
+    });
+  }else{
+    document.getElementById("loginOverlay").style.display='flex';
+  }
+});
+</script>
+
+</body>
+</html>

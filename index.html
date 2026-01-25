@@ -399,19 +399,35 @@ document.getElementById("logoutBtn").addEventListener("click",()=>{
 
 // ===== MODAL CELDA =====
 function openForm(td){
-  if(!currentUser){alert("Debes iniciar sesión"); return;}
-  currentCell=td;
-  document.getElementById("qrz").value=currentUser;
-  document.getElementById("freq").value=td.dataset.freq||'';
-  currentMode=td.dataset.mode||'';
-  document.getElementById("selectedMode").innerText="Modo: "+(currentMode||'—');
-  document.getElementById("modal").style.display='block';
+  if(!currentUser){
+    alert("Debes iniciar sesión");
+    return;
+  }
+
+  // Si la celda está ocupada por otro operador → bloqueo total
+  if(td.dataset.user && td.dataset.user !== currentUser){
+    alert("Esta casilla ya está ocupada por " + td.dataset.user);
+    return;
+  }
+
+  currentCell = td;
+  document.getElementById("qrz").value = currentUser;
+  document.getElementById("freq").value = td.dataset.freq || '';
+  currentMode = td.dataset.mode || '';
+  document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—');
+  document.getElementById("modal").style.display = 'block';
 }
+
 
 function setMode(mode){currentMode=mode; document.getElementById("selectedMode").innerText="Modo: "+mode;}
 
 function saveCell(){
   if(!currentCell) return;
+
+if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){
+  alert("No puedes modificar una casilla ocupada por otro operador");
+  return;
+}
 
   // Guardar los datos en la celda
   const freq = document.getElementById("freq").value || '';
@@ -511,6 +527,10 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
+
+
+
+
 
 
 

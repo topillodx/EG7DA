@@ -31,57 +31,109 @@ main{
   padding:25px;
   box-shadow:0 0 20px rgba(0,0,0,.3);
 }
-
 /* ===== TABLA ===== */
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:25px;
+table {
+  width: 100%;
+  border-collapse: separate;  /* permite bordes redondeados */
+  border-spacing: 0;
+  margin-top: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* sombra para resaltar */
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
-th{
-  background:#1a6aff;
-  color:white;
-  padding:12px;
-  font-size:1.2em;
-}
-td{
-  border:1px solid #ccc;
-  padding:6px;
-  text-align:center;
-  background:#f2ffcc;
-  cursor:pointer;
-  font-size:.85em;
-  min-width:90px;
-}
-td.banda{
-  background:#c2c2ef;
-  font-weight:bold;
-  cursor:default;
-  font-size:1.8em;
-  color:#ff0000;
-}
-td.bloqueada {
-  background:#e6ffff; /* rojo claro */
-  color: #000000;
-  font-weight: bold;
+
+th {
+  background: #1a6aff;
+  color: white;
+  padding: 12px;
+  font-size: 1.2em;
   text-align: center;
+  border-bottom: 3px solid #003087;
+}
+
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  background:#f9ffe6; /* verde suave sobre fondo #ccffb3 */
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background 0.2s, transform 0.15s;
+}
+
+td:hover {
+  background: #ffff66; /* amarillo al pasar el mouse */
+  transform: scale(1.03);
+}
+
+td.banda {
+  background:#d7d7f4; /* morado suave */
+  font-weight: bold;
+  cursor: default;
+  font-size: 1.8em;
+  color: #ff0000;
+}
+
+td.bloqueada {
+  background: #ffcccc; /* rojo suave para bandas bloqueadas */
+  color: #000;
+  font-weight: bold;
   cursor: not-allowed;
 }
-td.bloqueada:hover {
-  background:#006600; /* sin efecto hover */
-  transform: none;
+/* Tooltip para celdas bloqueadas */
+td.bloqueada {
+  position: relative; /* necesario para el tooltip */
+  cursor: not-allowed;
 }
 
-td:hover{background:#ffff66;transform:scale(1.03);transition:.15s}
-td.activo{background:#ff8080;font-weight:bold}
-
-footer{
-  text-align:center;
-  padding:18px;
-  background:#003087;
-  color:white;
-  margin-top:30px;
+/* Contenedor del tooltip */
+td.bloqueada .tooltip-text {
+  visibility: hidden;
+  width: 140px;
+  background-color: #ff3333;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 6px;
+  position: absolute;
+  z-index: 10;
+  top: -40px; /* aparece arriba de la celda */
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  font-size: 0.9em;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  transition: opacity 0.2s;
+  opacity: 0;
 }
+
+/* Mostrar tooltip al pasar el mouse */
+td.bloqueada:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+td.activo {
+  background: #ff8080; /* rojo activo */
+  font-weight: bold;
+}
+
+/* bordes redondeados en las esquinas */
+table tr:first-child th:first-child { border-top-left-radius: 12px; }
+table tr:first-child th:last-child { border-top-right-radius: 12px; }
+table tr:last-child td:first-child { border-bottom-left-radius: 12px; }
+table tr:last-child td:last-child { border-bottom-right-radius: 12px; }
+
+footer {
+  text-align: center;
+  padding: 18px;
+  background: #003087;
+  color: white;
+  margin-top: 30px;
+}
+
 
 /* ===== LOGIN & REGISTER ===== */
 #loginOverlay, #registerOverlay{
@@ -306,7 +358,6 @@ footer{
 <tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
 </table>
 
-  
 <!-- PANEL RADIO -->
 <div class="radio-panel" style="margin-top:30px;">
     <div style="border:4px solid #003087; border-radius:12px; overflow:hidden">
@@ -605,23 +656,6 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

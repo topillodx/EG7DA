@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -441,29 +437,91 @@ function setMode(mode){
 function saveCell(){
   if(!currentCell) return;
 
-  if(!currentMode){
-    alert("Selecciona un modo válido");
+  if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){
+    alert("No puedes modificar una casilla ocupada por otro operador");
     return;
   }
 
-  // Guardar datos en la celda
-  const freq = document.getElementById("freq").value || '';
-  currentCell.innerHTML = `<strong>${currentUser}</strong><br>${freq} MHz<br><em>${currentMode}</em>`;
+  const freqStr = document.getElementById("freq").value || '';
+  const freq = parseFloat(freqStr);
+
+  const band = currentCell.dataset.band.split('-')[0]; // "80", "60", etc.
+
+  // Límites CW
+  const cwLimits = {
+    "80": [3500, 3600],
+    "60": [5351.5, 5354],
+    "40": [7000, 7060],
+    "30": [10100, 10125],
+    "20": [14000, 14065],
+    "17": [18068, 18095],
+    "15": [21000, 21070],
+    "12": [24890, 24910],
+    "10": [28000, 28200],
+    "6":  [50000, 50100],
+    "2":  [144000, 144280]
+  };
+
+  // Límites SSB
+  const ssbLimits = {
+    "80": [3650, 3800],
+    "60": [3554, 3566],
+    "40": [7060, 7200],
+    "30": [null, null], // bloqueado
+    "20": [14150, 14350],
+    "17": [18110, 18168],
+    "15": [21200, 21450],
+    "12": [24930, 24990],
+    "10": [28300, 28800],
+    "6":  [50110, 50200],
+    "2":  [144250, 146000]
+  };
+
+  // Validación CW
+  if(currentMode === 'CW'){
+    if(!freq || freq < cwLimits[band][0] || freq > cwLimits[band][1]){
+      alert(`Frecuencia inválida para CW en ${band}m. Debe estar entre ${cwLimits[band][0]} y ${cwLimits[band][1]} MHz`);
+      return;
+    }
+  }
+
+  // Validación SSB
+  if(currentMode === 'SSB'){
+    const limits = ssbLimits[band];
+    if(!limits[0] || !limits[1]){
+      alert(`SSB no permitido en ${band}m`);
+      return;
+    }
+    if(!freq || freq < limits[0] || freq > limits[1]){
+      alert(`Frecuencia inválida para SSB en ${band}m. Debe estar entre ${limits[0]} y ${limits[1]} MHz`);
+      return;
+    }
+  }
+
+  // Guardar los datos en la celda
+  currentCell.innerHTML = `<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freqStr} MHz`;
   currentCell.classList.add('activo');
 
+  // Guardar en dataset para control por usuario y modo
   currentCell.dataset.user = currentUser;
   currentCell.dataset.mode = currentMode;
-  currentCell.dataset.freq = freq;
+  currentCell.dataset.freq = freqStr;
 
   // Guardar en Firebase
   const bandKey = currentCell.dataset.band.replace('-','_');
   db.ref('bands/' + bandKey).set({
     user: currentUser,
     mode: currentMode,
-    freq: freq
-  }).then(()=>{ closeModal(); })
-  .catch(err=>{ alert("Error al guardar: "+err.message); });
+    freq: freqStr
+  })
+  .then(()=>{
+    document.getElementById("modal").style.display='none';
+  })
+  .catch(err=>{
+    alert("Error al guardar: " + err.message);
+  });
 }
+
 
 
 function clearCell(){
@@ -544,6 +602,10 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
+
+
+
+
 
 
 

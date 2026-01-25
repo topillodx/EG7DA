@@ -296,10 +296,17 @@ footer{
 <tr><td class="banda">6 m</td><td onclick="openForm(this)" data-band="6-CW"></td><td onclick="openForm(this)" data-band="6-SSB"></td><td onclick="openForm(this)" data-band="6-DIG1"></td><td onclick="openForm(this)" data-band="6-DIG2"></td></tr>
 <tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
 </table>
-<!-- PANEL RADIO -->
-<div style="border:4px solid #003087;border-radius:14px;overflow:hidden;margin-top:35px">
-<iframe src="https://clublog.org/livestream/EG7DA" width="100%" height="600" style="border:none;"></iframe>
-</div>
+ <!-- PANEL RADIO -->
+    <div class="radio-panel">
+        <div style="border:4px solid #003087;border-radius:12px;overflow:hidden">
+            <iframe 
+                src="https://clublog.org/livestream/EG7DA"
+                width="100%"
+                height="600"
+                style="border:none;">
+            </iframe>
+        </div>
+
 
 </main>
 <footer>© By TOPILLODX</footer>
@@ -505,6 +512,7 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
+
 
 
 

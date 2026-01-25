@@ -2,8 +2,6 @@
 
 
 
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -332,14 +330,11 @@ footer{
     <h3>Datos de transmisión</h3>
     <input id="qrz" disabled>
     <input id="freq" placeholder="Frecuencia MHz">
-    <div>
-      <button class="mode-btn" onclick="setMode('CW')">CW</button>
-      <button class="mode-btn" onclick="setMode('SSB')">SSB</button>
-      <button class="mode-btn" onclick="setMode('FT8')">FT8</button>
-      <button class="mode-btn" onclick="setMode('FT4')">FT4</button>
-      <button class="mode-btn" onclick="setMode('RTTY')">RTTY</button>
-      <button class="mode-btn" onclick="setMode('PSK')">PSK</button>
-    </div>
+
+ <div class="mode-buttons">
+  <!-- Los botones se generarán aquí según la celda -->
+</div>
+
     <p id="selectedMode">Modo: —</p>
     <button onclick="saveCell()">Guardar</button>
     <button class="red" onclick="clearCell()">Liberar banda</button>
@@ -404,37 +399,58 @@ function openForm(td){
     return;
   }
 
-  // Si la celda está ocupada por otro operador → bloqueo total
+  // Bloqueo si celda ocupada por otro operador
   if(td.dataset.user && td.dataset.user !== currentUser){
     alert("Esta casilla ya está ocupada por " + td.dataset.user);
     return;
   }
 
   currentCell = td;
-  document.getElementById("qrz").value = currentUser;
-  document.getElementById("freq").value = td.dataset.freq || '';
+  document.getElementById("qrz").value = currentUser;          // Operador
+  document.getElementById("freq").value = td.dataset.freq || ''; // Frecuencia
   currentMode = td.dataset.mode || '';
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—');
+
+  // Determinar modos permitidos
+  let allowedModes = [];
+  const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
+  if(bandType === "CW"){ allowedModes = ["CW"]; }
+  else if(bandType === "SSB"){ allowedModes = ["SSB"]; }
+  else { allowedModes = ["FT8","FT4","RTTY","PSK"]; }
+
+  // Actualizar botones de modo sin tocar el resto del modal
+  const btnContainer = document.querySelector(".mode-buttons");
+  btnContainer.innerHTML = ""; // Limpiar botones previos
+  allowedModes.forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "mode-btn";
+    btn.innerText = m;
+    btn.onclick = () => setMode(m);
+    btnContainer.appendChild(btn);
+  });
+
   document.getElementById("modal").style.display = 'block';
 }
 
 
-function setMode(mode){currentMode=mode; document.getElementById("selectedMode").innerText="Modo: "+mode;}
+function setMode(mode){
+  currentMode = mode;
+  document.getElementById("selectedMode").innerText = "Modo: " + mode;
+}
 
 function saveCell(){
   if(!currentCell) return;
 
-if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){
-  alert("No puedes modificar una casilla ocupada por otro operador");
-  return;
-}
+  if(!currentMode){
+    alert("Selecciona un modo válido");
+    return;
+  }
 
-  // Guardar los datos en la celda
+  // Guardar datos en la celda
   const freq = document.getElementById("freq").value || '';
-  currentCell.innerHTML = `<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freq} MHz`;
+  currentCell.innerHTML = `<strong>${currentUser}</strong><br>${freq} MHz<br><em>${currentMode}</em>`;
   currentCell.classList.add('activo');
 
-  // Guardar en dataset para control por usuario y modo
   currentCell.dataset.user = currentUser;
   currentCell.dataset.mode = currentMode;
   currentCell.dataset.freq = freq;
@@ -445,14 +461,8 @@ if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){
     user: currentUser,
     mode: currentMode,
     freq: freq
-  })
-  .then(()=>{
-    // Cerrar modal
-    document.getElementById("modal").style.display='none';
-  })
-  .catch(err=>{
-    alert("Error al guardar: " + err.message);
-  });
+  }).then(()=>{ closeModal(); })
+  .catch(err=>{ alert("Error al guardar: "+err.message); });
 }
 
 
@@ -479,10 +489,17 @@ function clearCell(){
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display='none';
-  currentCell=null;
-  currentMode='';
+  const modal = document.getElementById("modal");
+  const modeButtons = document.getElementById("modeButtons");
+
+  if(modal) modal.style.display = "none";
+  if(modeButtons) modeButtons.style.display = "block";
+
+  currentCell = null;
+  currentMode = "";
 }
+
+
 
 // ===== UTC =====
 setInterval(()=>{

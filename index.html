@@ -31,13 +31,14 @@ main{
   padding:25px;
   box-shadow:0 0 20px rgba(0,0,0,.3);
 }
+
 /* ===== TABLA ===== */
 table {
   width: 100%;
-  border-collapse: separate;  /* permite bordes redondeados */
+  border-collapse: separate;
   border-spacing: 0;
   margin-top: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* sombra para resaltar */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   border-radius: 12px;
   overflow: hidden;
   font-family: 'Segoe UI', Arial, sans-serif;
@@ -56,19 +57,19 @@ td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
-  background:#f9ffe6; /* verde suave sobre fondo #ccffb3 */
+  background:#f9ffe6;
   cursor: pointer;
   font-size: 0.9em;
   transition: background 0.2s, transform 0.15s;
 }
 
 td:hover {
-  background: #ffff66; /* amarillo al pasar el mouse */
+  background: #ffff66;
   transform: scale(1.03);
 }
 
 td.banda {
-  background:#d7d7f4; /* morado suave */
+  background:#d7d7f4;
   font-weight: bold;
   cursor: default;
   font-size: 1.8em;
@@ -76,18 +77,13 @@ td.banda {
 }
 
 td.bloqueada {
-  background: #ffcccc; /* rojo suave para bandas bloqueadas */
+  background: #ffcccc;
   color: #000;
   font-weight: bold;
   cursor: not-allowed;
-}
-/* Tooltip para celdas bloqueadas */
-td.bloqueada {
-  position: relative; /* necesario para el tooltip */
-  cursor: not-allowed;
+  position: relative;
 }
 
-/* Contenedor del tooltip */
 td.bloqueada .tooltip-text {
   visibility: hidden;
   width: 140px;
@@ -98,7 +94,7 @@ td.bloqueada .tooltip-text {
   padding: 6px;
   position: absolute;
   z-index: 10;
-  top: -40px; /* aparece arriba de la celda */
+  top: -40px;
   left: 50%;
   transform: translateX(-50%);
   font-weight: bold;
@@ -108,19 +104,17 @@ td.bloqueada .tooltip-text {
   opacity: 0;
 }
 
-/* Mostrar tooltip al pasar el mouse */
 td.bloqueada:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
-
 td.activo {
-  background: #ff8080; /* rojo activo */
+  background: #ff8080;
   font-weight: bold;
 }
 
-/* bordes redondeados en las esquinas */
+/* bordes redondeados */
 table tr:first-child th:first-child { border-top-left-radius: 12px; }
 table tr:first-child th:last-child { border-top-right-radius: 12px; }
 table tr:last-child td:first-child { border-bottom-left-radius: 12px; }
@@ -133,7 +127,6 @@ footer {
   color: white;
   margin-top: 30px;
 }
-
 
 /* ===== LOGIN & REGISTER ===== */
 #loginOverlay, #registerOverlay{
@@ -316,8 +309,10 @@ footer {
 </header>
 
 <main>
-<div style="text-align:right; max-width:1400px; margin:auto; padding:10px;">
-  <button id="logoutBtn" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
+<!-- USUARIO CONECTADO + LOGOUT -->
+<div style="display:flex; justify-content:space-between; align-items:center; max-width:1400px; margin:auto; padding:10px;">
+  <div id="currentUserDisplay" style="font-weight:bold;color:#003087"></div>
+  <button id="logoutBtn" onclick="logout()" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
 </div>
 
 <!-- BOTÓN PLAN DE BANDAS -->
@@ -327,7 +322,6 @@ footer {
     Ver Plan de Bandas
   </button>
 </div>
-
 
 <div class="titulo-container">
   <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">
@@ -348,7 +342,7 @@ footer {
 <tr><td class="banda">80 m</td><td onclick="openForm(this)" data-band="80-CW"></td><td onclick="openForm(this)" data-band="80-SSB"></td><td onclick="openForm(this)" data-band="80-DIG1"></td><td onclick="openForm(this)" data-band="80-DIG2"></td></tr>
 <tr><td class="banda">60 m</td><td onclick="openForm(this)" data-band="60-CW"></td><td onclick="openForm(this)" data-band="60-SSB"></td><td onclick="openForm(this)" data-band="60-DIG1"></td><td onclick="openForm(this)" data-band="60-DIG2"></td></tr>
 <tr><td class="banda">40 m</td><td onclick="openForm(this)" data-band="40-CW"></td><td onclick="openForm(this)" data-band="40-SSB"></td><td onclick="openForm(this)" data-band="40-DIG1"></td><td onclick="openForm(this)" data-band="40-DIG2"></td></tr>
-<tr><td class="banda">30 m</td><td onclick="openForm(this)" data-band="30-CW"></td><td class="bloqueada" data-band="30-SSB">BLOKED</td><td onclick="openForm(this)" data-band="30-DIG1"></td><td onclick="openForm(this)" data-band="30-DIG2"></td></tr>
+<tr><td class="banda">30 m</td><td onclick="openForm(this)" data-band="30-CW"></td><td class="bloqueada" data-band="30-SSB">BLOQUEADO<div class="tooltip-text">SSB no disponible</div></td><td onclick="openForm(this)" data-band="30-DIG1"></td><td onclick="openForm(this)" data-band="30-DIG2"></td></tr>
 <tr><td class="banda">20 m</td><td onclick="openForm(this)" data-band="20-CW"></td><td onclick="openForm(this)" data-band="20-SSB"></td><td onclick="openForm(this)" data-band="20-DIG1"></td><td onclick="openForm(this)" data-band="20-DIG2"></td></tr>
 <tr><td class="banda">17 m</td><td onclick="openForm(this)" data-band="17-CW"></td><td onclick="openForm(this)" data-band="17-SSB"></td><td onclick="openForm(this)" data-band="17-DIG1"></td><td onclick="openForm(this)" data-band="17-DIG2"></td></tr>
 <tr><td class="banda">15 m</td><td onclick="openForm(this)" data-band="15-CW"></td><td onclick="openForm(this)" data-band="15-SSB"></td><td onclick="openForm(this)" data-band="15-DIG1"></td><td onclick="openForm(this)" data-band="15-DIG2"></td></tr>
@@ -370,7 +364,6 @@ footer {
     </div>
 </div>
 
-
 </main>
 <footer>© By TOPILLODX</footer>
 
@@ -382,7 +375,7 @@ footer {
     <input id="freq" placeholder="Frecuencia MHz">
 
  <div class="mode-buttons">
-  <!-- Los botones se generarán aquí según la celda -->
+  <!-- Botones de modo se generan dinámicamente -->
 </div>
 
     <p id="selectedMode">Modo: —</p>
@@ -414,6 +407,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 let currentUser = '', currentUID = null, currentCell = null, currentMode = '';
+let isAdmin = false;
 
 // ===== LOGIN / REGISTER =====
 function showRegister(){ document.getElementById("loginOverlay").style.display='none'; document.getElementById("registerOverlay").style.display='flex'; }
@@ -430,58 +424,65 @@ function registerUser(){
 }
 
 function loginUser(){
-  const email=document.getElementById("loginUser").value;
-  const pass=document.getElementById("loginPass").value;
+  const email = document.getElementById("loginUser").value;
+  const pass  = document.getElementById("loginPass").value;
+
   auth.signInWithEmailAndPassword(email,pass)
-    .then(cred=>db.ref("users/"+cred.user.uid).once("value"))
-    .then(snapshot=>{currentUID=snapshot.key; currentUser=snapshot.val().indicativo; document.getElementById("loginOverlay").style.display='none';})
-    .catch(err=>{const loginError=document.getElementById("loginError"); loginError.innerText=err.message; loginError.style.display='block';});
+    .then(cred => db.ref("users/"+cred.user.uid).once("value"))
+    .then(snapshot => {
+      currentUID = snapshot.key;
+      currentUser = snapshot.val().indicativo.toUpperCase();
+      isAdmin = (currentUser === "EA7ZC");
+      document.getElementById("loginOverlay").style.display='none';
+      document.getElementById("currentUserDisplay").innerText = "Usuario: " + currentUser + (isAdmin ? " (Admin)" : "");
+    })
+    .catch(err=>{
+      const loginError=document.getElementById("loginError");
+      loginError.innerText=err.message;
+      loginError.style.display='block';
+    });
 }
 
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-  auth.signOut().then(()=>{currentUser=''; currentUID=null; document.getElementById("loginOverlay").style.display='flex';});
-});
+function logout(){
+  auth.signOut()
+    .then(()=>{
+      currentUser="";
+      currentUID="";
+      isAdmin=false;
+      document.getElementById("loginOverlay").style.display="flex";
+      document.getElementById("currentUserDisplay").innerText="";
+    });
+}
 
 // ===== MODAL CELDA =====
 function openForm(td){
-  if(!currentUser){
-    alert("Debes iniciar sesión");
-    return;
-  }
-
-  // Bloqueo si celda ocupada por otro operador
-  if(td.dataset.user && td.dataset.user !== currentUser){
-    alert("Esta casilla ya está ocupada por " + td.dataset.user);
-    return;
-  }
-
+  if(!currentUser){ alert("Debes iniciar sesión"); return; }
+  if(td.dataset.user && td.dataset.user !== currentUser){ alert("Esta casilla ya está ocupada por " + td.dataset.user); return; }
   currentCell = td;
-  document.getElementById("qrz").value = currentUser;          // Operador
-  document.getElementById("freq").value = td.dataset.freq || ''; // Frecuencia
+  document.getElementById("qrz").value = currentUser;
+  document.getElementById("freq").value = td.dataset.freq || '';
   currentMode = td.dataset.mode || '';
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—');
 
-  // Determinar modos permitidos
+  // Modos permitidos
   let allowedModes = [];
-  const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
-  if(bandType === "CW"){ allowedModes = ["CW"]; }
-  else if(bandType === "SSB"){ allowedModes = ["SSB"]; }
-  else { allowedModes = ["FT8","FT4","RTTY","PSK"]; }
+  const bandType = td.dataset.band.split("-")[1];
+  if(bandType==="CW"){ allowedModes=["CW"]; }
+  else if(bandType==="SSB"){ allowedModes=["SSB"]; }
+  else{ allowedModes=["FT8","FT4","RTTY","PSK"]; }
 
-  // Actualizar botones de modo sin tocar el resto del modal
   const btnContainer = document.querySelector(".mode-buttons");
-  btnContainer.innerHTML = ""; // Limpiar botones previos
-  allowedModes.forEach(m => {
-    const btn = document.createElement("button");
-    btn.className = "mode-btn";
-    btn.innerText = m;
-    btn.onclick = () => setMode(m);
+  btnContainer.innerHTML="";
+  allowedModes.forEach(m=>{
+    const btn=document.createElement("button");
+    btn.className="mode-btn";
+    btn.innerText=m;
+    btn.onclick=()=>setMode(m);
     btnContainer.appendChild(btn);
   });
 
-  document.getElementById("modal").style.display = 'block';
+  document.getElementById("modal").style.display='block';
 }
-
 
 function setMode(mode){
   currentMode = mode;
@@ -490,102 +491,43 @@ function setMode(mode){
 
 function saveCell(){
   if(!currentCell) return;
-
-  if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){
-    alert("No puedes modificar una casilla ocupada por otro operador");
-    return;
-  }
+  if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){ alert("No puedes modificar una casilla ocupada por otro operador"); return; }
 
   const freqStr = document.getElementById("freq").value || '';
   const freq = parseFloat(freqStr);
+  const band = currentCell.dataset.band.split('-')[0];
 
-  const band = currentCell.dataset.band.split('-')[0]; // "80", "60", etc.
+  const cwLimits = {"80":[3500,3570],"60":[5351.5,5354],"40":[7000,7060],"30":[10100,10125],"20":[14000,14065],"17":[18068,18095],"15":[21000,21070],"12":[24890,24910],"10":[28000,28200],"6":[50000,50100],"2":[144000,144280]};
+  const ssbLimits = {"80":[3650,3800],"60":[3554,3566],"40":[7060,7200],"30":[null,null],"20":[14150,14350],"17":[18110,18168],"15":[21200,21450],"12":[24930,24990],"10":[28300,28800],"6":[50110,50200],"2":[144250,146000]};
 
-  // Límites CW
-  const cwLimits = {
-    "80": [3500, 3570],
-    "60": [5351.5, 5354],
-    "40": [7000, 7060],
-    "30": [10100, 10125],
-    "20": [14000, 14065],
-    "17": [18068, 18095],
-    "15": [21000, 21070],
-    "12": [24890, 24910],
-    "10": [28000, 28200],
-    "6":  [50000, 50100],
-    "2":  [144000, 144280]
-  };
-
-  // Límites SSB
-  const ssbLimits = {
-    "80": [3650, 3800],
-    "60": [3554, 3566],
-    "40": [7060, 7200],
-    "30": [null, null], // bloqueado
-    "20": [14150, 14350],
-    "17": [18110, 18168],
-    "15": [21200, 21450],
-    "12": [24930, 24990],
-    "10": [28300, 28800],
-    "6":  [50110, 50200],
-    "2":  [144250, 146000]
-  };
-
-  // Validación CW
-  if(currentMode === 'CW'){
-    if(!freq || freq < cwLimits[band][0] || freq > cwLimits[band][1]){
-      alert(`Frecuencia inválida para CW en ${band}m. Debe estar entre ${cwLimits[band][0]} y ${cwLimits[band][1]} MHz`);
-      return;
-    }
+  if(currentMode==='CW' && (!freq || freq<cwLimits[band][0] || freq>cwLimits[band][1])){
+    alert(`Frecuencia inválida para CW en ${band}m. Debe estar entre ${cwLimits[band][0]} y ${cwLimits[band][1]} MHz`);
+    return;
   }
-
-  // Validación SSB
-  if(currentMode === 'SSB'){
-    const limits = ssbLimits[band];
-    if(!limits[0] || !limits[1]){
-      alert(`SSB no permitido en ${band}m`);
-      return;
-    }
-    if(!freq || freq < limits[0] || freq > limits[1]){
+  if(currentMode==='SSB'){
+    const limits=ssbLimits[band];
+    if(!limits[0]||!limits[1]){ alert(`SSB no permitido en ${band}m`); return; }
+    if(!freq || freq<limits[0]||freq>limits[1]){
       alert(`Frecuencia inválida para SSB en ${band}m. Debe estar entre ${limits[0]} y ${limits[1]} MHz`);
       return;
     }
   }
 
-  // Guardar los datos en la celda
   currentCell.innerHTML = `<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freqStr} MHz`;
   currentCell.classList.add('activo');
+  currentCell.dataset.user=currentUser;
+  currentCell.dataset.mode=currentMode;
+  currentCell.dataset.freq=freqStr;
 
-  // Guardar en dataset para control por usuario y modo
-  currentCell.dataset.user = currentUser;
-  currentCell.dataset.mode = currentMode;
-  currentCell.dataset.freq = freqStr;
-
-  // Guardar en Firebase
   const bandKey = currentCell.dataset.band.replace('-','_');
-  db.ref('bands/' + bandKey).set({
-    user: currentUser,
-    mode: currentMode,
-    freq: freqStr
-  })
-  .then(()=>{
-    document.getElementById("modal").style.display='none';
-  })
-  .catch(err=>{
-    alert("Error al guardar: " + err.message);
-  });
+  db.ref('bands/' + bandKey).set({user:currentUser,mode:currentMode,freq:freqStr})
+    .then(()=>{ document.getElementById("modal").style.display='none'; })
+    .catch(err=>{ alert("Error al guardar: " + err.message); });
 }
-
-
 
 function clearCell(){
   if(!currentCell) return;
-
-  // 🔐 Solo el dueño puede liberar
-  if(currentCell.dataset.user !== currentUser){
-    alert("Solo puedes liberar la casilla que tú ocupaste");
-    return;
-  }
+  if(!isAdmin && currentCell.dataset.user !== currentUser){ alert("Solo puedes liberar tu propia casilla."); return; }
 
   const cellId = currentCell.dataset.band.replace('-','_');
   db.ref("bands/"+cellId).remove()
@@ -596,22 +538,14 @@ function clearCell(){
       currentCell.dataset.freq='';
       currentCell.classList.remove('activo');
       closeModal();
-    })
-    .catch(err=>alert("Error al liberar la banda: "+err.message));
+    });
 }
 
 function closeModal(){
-  const modal = document.getElementById("modal");
-  const modeButtons = document.getElementById("modeButtons");
-
-  if(modal) modal.style.display = "none";
-  if(modeButtons) modeButtons.style.display = "block";
-
-  currentCell = null;
-  currentMode = "";
+  document.getElementById("modal").style.display="none";
+  currentCell=null;
+  currentMode="";
 }
-
-
 
 // ===== UTC =====
 setInterval(()=>{
@@ -622,11 +556,16 @@ setInterval(()=>{
     now.getUTCSeconds().toString().padStart(2,'0');
 },1000);
 
-// ===== CARGAR DATOS EXISTENTES =====
+// ===== CARGAR DATOS =====
 auth.onAuthStateChanged(user=>{
   if(user){
     currentUID=user.uid;
-    db.ref("users/"+user.uid).once("value").then(s=>{currentUser=s.val().indicativo; document.getElementById("loginOverlay").style.display='none';});
+    db.ref("users/"+user.uid).once("value").then(s=>{
+      currentUser = s.val().indicativo.toUpperCase();
+      isAdmin = (currentUser==="EA7ZC");
+      document.getElementById("loginOverlay").style.display='none';
+      document.getElementById("currentUserDisplay").innerText="Usuario: "+currentUser+(isAdmin?" (Admin)":"");
+    });
   }
 });
 
@@ -636,28 +575,27 @@ db.ref("bands").on("value",snapshot=>{
     if(td.dataset.band){
       const key=td.dataset.band.replace('-','_');
       if(data[key]){
-  td.innerHTML = `<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
-  td.dataset.user = data[key].user;   // 🔴 CLAVE
-  td.dataset.mode = data[key].mode;
-  td.dataset.freq = data[key].freq;
-  td.classList.add('activo');
-}else{
-  td.innerHTML='';
-  td.dataset.user='';                 // 🔴 LIMPIAR
-  td.dataset.mode='';
-  td.dataset.freq='';
-  td.classList.remove('activo');
-}
-
+        td.innerHTML=`<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
+        td.dataset.user=data[key].user;
+        td.dataset.mode=data[key].mode;
+        td.dataset.freq=data[key].freq;
+        td.classList.add('activo');
+      } else {
+        td.innerHTML='';
+        td.dataset.user='';
+        td.dataset.mode='';
+        td.dataset.freq='';
+        td.classList.remove('activo');
+      }
     }
   });
+});
+
+// ===== CERRAR MODAL CLICK FUERA =====
+document.getElementById("modal").addEventListener("click", e=>{
+  if(e.target.id==="modal") closeModal();
 });
 </script>
 
 </body>
 </html>
-
-
-
-
-

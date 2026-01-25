@@ -1,3 +1,9 @@
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -268,6 +274,15 @@ footer{
   <button id="logoutBtn" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
 </div>
 
+<!-- BOTÓN PLAN DE BANDAS -->
+<div style="text-align:center; max-width:1400px; margin:auto; padding:10px;">
+  <button onclick="window.location.href='plan-bandas.html'" 
+          style="padding:10px 18px; background:#003087; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+    Ver Plan de Bandas
+  </button>
+</div>
+
+
 <div class="titulo-container">
   <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">
   <h1 class="titulo-3d">EG<span>7</span>DA</h1>
@@ -296,7 +311,7 @@ footer{
 <tr><td class="banda">6 m</td><td onclick="openForm(this)" data-band="6-CW"></td><td onclick="openForm(this)" data-band="6-SSB"></td><td onclick="openForm(this)" data-band="6-DIG1"></td><td onclick="openForm(this)" data-band="6-DIG2"></td></tr>
 <tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
 </table>
- <!-- PANEL RADIO -->
+  <!-- PANEL RADIO -->
     <div class="radio-panel">
         <div style="border:4px solid #003087;border-radius:12px;overflow:hidden">
             <iframe 
@@ -512,8 +527,6 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
-
-
 
 
 

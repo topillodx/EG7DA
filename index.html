@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -137,8 +139,6 @@ footer{
   margin-top:10px;
   font-size:1em;
 }
-td.activo strong { font-size:1.2em; }
-td.activo em { font-size:1.2em; }
 .modal-content button{
   margin-top:8px;
   padding:8px;
@@ -287,10 +287,6 @@ td.activo em { font-size:1.2em; }
 <tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
 </table>
 
-<div style="border:4px solid #003087;border-radius:12px;overflow:hidden;margin-top:35px">
-<iframe src="https://clublog.org/livestream/EG7DA" width="100%" height="600" style="border:none;"></iframe>
-</div>
-
 </main>
 <footer>© By TOPILLODX</footer>
 
@@ -320,6 +316,7 @@ td.activo em { font-size:1.2em; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// ================== JAVASCRIPT COMPLETO ==================
 const firebaseConfig = {
   apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
   authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
@@ -334,167 +331,116 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-let currentBandKey = '';
-let currentUID = null;
+let currentUser = '', currentUID = null, currentCell = null, currentMode = '';
 
-
-let currentUser='', currentCell=null, currentMode='';
-
-// FUNCIONES LOGIN/REGISTER
-function showRegister(){
-  document.getElementById("loginOverlay").style.display='none';
-  document.getElementById("registerOverlay").style.display='flex';
-}
-function showLogin(){
-  document.getElementById("registerOverlay").style.display='none';
-  document.getElementById("loginOverlay").style.display='flex';
-}
+// ===== LOGIN / REGISTER =====
+function showRegister(){ document.getElementById("loginOverlay").style.display='none'; document.getElementById("registerOverlay").style.display='flex'; }
+function showLogin(){ document.getElementById("registerOverlay").style.display='none'; document.getElementById("loginOverlay").style.display='flex'; }
 
 function registerUser(){
-  const email = document.getElementById("regEmail").value;
-  const pass = document.getElementById("regPass").value;
-  const indicativo = document.getElementById("regUser").value.toUpperCase();
-
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then((cred)=>{
-      const uid = cred.user.uid;
-
-      return db.ref("users/" + uid).set({
-        email: email,
-        indicativo: indicativo
-      });
-    })
-    .then(()=>{
-      alert("Usuario registrado correctamente. Inicia sesión.");
-      showLogin();
-    })
-    .catch(err=>{
-      const regError = document.getElementById("regError");
-      regError.innerText = err.message;
-      regError.style.display = 'block';
-    });
+  const email=document.getElementById("regEmail").value;
+  const pass=document.getElementById("regPass").value;
+  const indicativo=document.getElementById("regUser").value.toUpperCase();
+  auth.createUserWithEmailAndPassword(email,pass)
+    .then(cred=>db.ref("users/"+cred.user.uid).set({email,indicativo}))
+    .then(()=>{alert("Usuario registrado. Inicia sesión."); showLogin();})
+    .catch(err=>{const regError=document.getElementById("regError"); regError.innerText=err.message; regError.style.display='block';});
 }
 
 function loginUser(){
-  const email = document.getElementById("loginUser").value;
-  const pass = document.getElementById("loginPass").value;
-
-  auth.signInWithEmailAndPassword(email, pass)
-    .then((cred)=>{
-      const uid = cred.user.uid;
-
-      return db.ref("users/" + uid).once("value");
-    })
-    .then(snapshot=>{
-      const data = snapshot.val();
-      currentUser = data.indicativo;
-
-      document.getElementById("loginOverlay").style.display = 'none';
-      localStorage.setItem("loginTime", Date.now());
-    })
-    .catch(err=>{
-      const loginError = document.getElementById("loginError");
-      loginError.innerText = err.message;
-      loginError.style.display = 'block';
-    });
+  const email=document.getElementById("loginUser").value;
+  const pass=document.getElementById("loginPass").value;
+  auth.signInWithEmailAndPassword(email,pass)
+    .then(cred=>db.ref("users/"+cred.user.uid).once("value"))
+    .then(snapshot=>{currentUID=snapshot.key; currentUser=snapshot.val().indicativo; document.getElementById("loginOverlay").style.display='none';})
+    .catch(err=>{const loginError=document.getElementById("loginError"); loginError.innerText=err.message; loginError.style.display='block';});
 }
 
-
-// Mantener sesión 12h
-const storedTime = localStorage.getItem("loginTime");
-if(storedTime && Date.now()-storedTime < 12*60*60*1000){
-  document.getElementById("loginOverlay").style.display='none';
-}
-
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", ()=>{
-  auth.signOut();
-  currentUser='';
-  localStorage.removeItem("loginTime");
-  document.getElementById("loginOverlay").style.display='flex';
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  auth.signOut().then(()=>{currentUser=''; currentUID=null; document.getElementById("loginOverlay").style.display='flex';});
 });
 
-// MODAL TABLA
-function openForm(cell){
-  currentCell = cell;
-  currentBandKey = cell.dataset.band;   // 🔑 CLAVE FIREBASE
-  currentMode = '';
-
-  document.getElementById("qrz").value = currentUser;
-  document.getElementById("freq").value = '';
-  document.getElementById("selectedMode").innerText = 'Modo: —';
-  document.getElementById("modal").style.display = 'block';
+// ===== MODAL CELDA =====
+function openForm(td){
+  if(!currentUser){alert("Debes iniciar sesión"); return;}
+  currentCell=td;
+  document.getElementById("qrz").value=currentUser;
+  document.getElementById("freq").value=td.dataset.freq||'';
+  currentMode=td.dataset.mode||'';
+  document.getElementById("selectedMode").innerText="Modo: "+(currentMode||'—');
+  document.getElementById("modal").style.display='block';
 }
 
-function setMode(m){ currentMode=m; document.getElementById("selectedMode").innerText='Modo: '+m; }
+function setMode(mode){currentMode=mode; document.getElementById("selectedMode").innerText="Modo: "+mode;}
 
 function saveCell(){
-  const freq = document.getElementById("freq").value;
-
-  if(!freq || !currentMode){
-    alert("Indica frecuencia y modo");
-    return;
-  }
-
-  const data = {
-    qrz: currentUser,
-    freq: freq,
-    modo: currentMode,
-    uid: currentUID
-  };
-
-  firebase.database()
-    .ref("casillas/" + currentBandKey)
-    .set(data)
-    .then(()=>{
-      document.getElementById("modal").style.display = 'none';
-    })
-    .catch(err=>{
-      alert("Error al guardar: " + err.message);
-    });
+  if(!currentCell||!currentUser||!currentUID) return alert("No estás autenticado.");
+  const freq=document.getElementById("freq").value;
+  currentCell.innerHTML=`<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freq} MHz`;
+  currentCell.dataset.mode=currentMode;
+  currentCell.dataset.freq=freq;
+  currentCell.classList.add('activo');
+  const cellId=currentCell.dataset.band.replace('-','_');
+  db.ref("bands/"+cellId).set({user:currentUser,uid:currentUID,mode:currentMode,freq})
+    .then(()=>closeModal())
+    .catch(err=>alert("Error al guardar: "+err.message));
 }
-firebase.database()
-  .ref("casillas")
-  .on("value", snapshot=>{
-    const data = snapshot.val();
-    if(!data) return;
-
-    document.querySelectorAll("td[data-band]").forEach(td=>{
-      const key = td.dataset.band;
-      if(data[key]){
-        td.innerHTML =
-          "<strong>"+data[key].qrz+"</strong><br>" +
-          data[key].freq+" MHz<br>" +
-          "<em>"+data[key].modo+"</em>";
-        td.classList.add("activo");
-      }else{
-        td.innerHTML = "";
-        td.classList.remove("activo");
-      }
-    });
-  });
-
 
 function clearCell(){
-  currentCell.innerHTML=''; currentCell.classList.remove('activo'); document.getElementById("modal").style.display='none';
+  if(!currentCell) return;
+  const cellId=currentCell.dataset.band.replace('-','_');
+  db.ref("bands/"+cellId).remove()
+    .then(()=>{
+      currentCell.innerHTML='';
+      currentCell.dataset.mode='';
+      currentCell.dataset.freq='';
+      currentCell.classList.remove('activo');
+      closeModal();
+    })
+    .catch(err=>alert("Error al liberar la banda: "+err.message));
 }
 
-// UTC
-setInterval(()=>{document.getElementById("utc").innerText='Hora UTC: '+new Date().toUTCString().slice(17,25)},1000);
-</script>
-<script>
+function closeModal(){
+  document.getElementById("modal").style.display='none';
+  currentCell=null;
+  currentMode='';
+}
+
+// ===== UTC =====
+setInterval(()=>{
+  const now=new Date();
+  document.getElementById("utc").innerText="Hora UTC: "+
+    now.getUTCHours().toString().padStart(2,'0')+":"+
+    now.getUTCMinutes().toString().padStart(2,'0')+":"+
+    now.getUTCSeconds().toString().padStart(2,'0');
+},1000);
+
+// ===== CARGAR DATOS EXISTENTES =====
 auth.onAuthStateChanged(user=>{
   if(user){
-    currentUID = user.uid;
-    db.ref("users/" + user.uid).once("value").then(snap=>{
-      if(snap.exists()){
-        currentUser = snap.val().indicativo;
-        document.getElementById("loginOverlay").style.display='none';
-      }
-    });
-  }else{
-    document.getElementById("loginOverlay").style.display='flex';
+    currentUID=user.uid;
+    db.ref("users/"+user.uid).once("value").then(s=>{currentUser=s.val().indicativo; document.getElementById("loginOverlay").style.display='none';});
   }
+});
+
+db.ref("bands").on("value",snapshot=>{
+  const data=snapshot.val()||{};
+  document.querySelectorAll("td").forEach(td=>{
+    if(td.dataset.band){
+      const key=td.dataset.band.replace('-','_');
+      if(data[key]){
+        td.innerHTML=`<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
+        td.dataset.mode=data[key].mode;
+        td.dataset.freq=data[key].freq;
+        td.classList.add('activo');
+      }else{
+        td.innerHTML='';
+        td.dataset.mode='';
+        td.dataset.freq='';
+        td.classList.remove('activo');
+      }
+    }
+  });
 });
 </script>
 

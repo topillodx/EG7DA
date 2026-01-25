@@ -343,6 +343,7 @@ footer{
     <p id="selectedMode">Modo: —</p>
     <button onclick="saveCell()">Guardar</button>
     <button class="red" onclick="clearCell()">Liberar banda</button>
+    <button style="background:#777" onclick="closeModal()">Cancelar</button>
   </div>
 </div>
 
@@ -410,24 +411,49 @@ function openForm(td){
 function setMode(mode){currentMode=mode; document.getElementById("selectedMode").innerText="Modo: "+mode;}
 
 function saveCell(){
-  if(!currentCell||!currentUser||!currentUID) return alert("No estás autenticado.");
-  const freq=document.getElementById("freq").value;
-  currentCell.innerHTML=`<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freq} MHz`;
-  currentCell.dataset.mode=currentMode;
-  currentCell.dataset.freq=freq;
+  if(!currentCell) return;
+
+  // Guardar los datos en la celda
+  const freq = document.getElementById("freq").value || '';
+  currentCell.innerHTML = `<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freq} MHz`;
   currentCell.classList.add('activo');
-  const cellId=currentCell.dataset.band.replace('-','_');
-  db.ref("bands/"+cellId).set({user:currentUser,uid:currentUID,mode:currentMode,freq})
-    .then(()=>closeModal())
-    .catch(err=>alert("Error al guardar: "+err.message));
+
+  // Guardar en dataset para control por usuario y modo
+  currentCell.dataset.user = currentUser;
+  currentCell.dataset.mode = currentMode;
+  currentCell.dataset.freq = freq;
+
+  // Guardar en Firebase
+  const bandKey = currentCell.dataset.band.replace('-','_');
+  db.ref('bands/' + bandKey).set({
+    user: currentUser,
+    mode: currentMode,
+    freq: freq
+  })
+  .then(()=>{
+    // Cerrar modal
+    document.getElementById("modal").style.display='none';
+  })
+  .catch(err=>{
+    alert("Error al guardar: " + err.message);
+  });
 }
+
 
 function clearCell(){
   if(!currentCell) return;
-  const cellId=currentCell.dataset.band.replace('-','_');
+
+  // 🔐 Solo el dueño puede liberar
+  if(currentCell.dataset.user !== currentUser){
+    alert("Solo puedes liberar la casilla que tú ocupaste");
+    return;
+  }
+
+  const cellId = currentCell.dataset.band.replace('-','_');
   db.ref("bands/"+cellId).remove()
     .then(()=>{
       currentCell.innerHTML='';
+      currentCell.dataset.user='';
       currentCell.dataset.mode='';
       currentCell.dataset.freq='';
       currentCell.classList.remove('activo');
@@ -465,16 +491,19 @@ db.ref("bands").on("value",snapshot=>{
     if(td.dataset.band){
       const key=td.dataset.band.replace('-','_');
       if(data[key]){
-        td.innerHTML=`<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
-        td.dataset.mode=data[key].mode;
-        td.dataset.freq=data[key].freq;
-        td.classList.add('activo');
-      }else{
-        td.innerHTML='';
-        td.dataset.mode='';
-        td.dataset.freq='';
-        td.classList.remove('activo');
-      }
+  td.innerHTML = `<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
+  td.dataset.user = data[key].user;   // 🔴 CLAVE
+  td.dataset.mode = data[key].mode;
+  td.dataset.freq = data[key].freq;
+  td.classList.add('activo');
+}else{
+  td.innerHTML='';
+  td.dataset.user='';                 // 🔴 LIMPIAR
+  td.dataset.mode='';
+  td.dataset.freq='';
+  td.classList.remove('activo');
+}
+
     }
   });
 });
@@ -482,6 +511,11 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
+
+
+
+
+
 
 
 

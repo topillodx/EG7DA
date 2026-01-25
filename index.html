@@ -334,6 +334,10 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+let currentBandKey = '';
+let currentUID = null;
+
+
 let currentUser='', currentCell=null, currentMode='';
 
 // FUNCIONES LOGIN/REGISTER
@@ -412,20 +416,65 @@ document.getElementById("logoutBtn").addEventListener("click", ()=>{
 
 // MODAL TABLA
 function openForm(cell){
-  currentCell=cell;
-  currentMode='';
-  document.getElementById("qrz").value=currentUser;
-  document.getElementById("freq").value='';
-  document.getElementById("selectedMode").innerText='Modo: —';
-  document.getElementById("modal").style.display='block';
+  currentCell = cell;
+  currentBandKey = cell.dataset.band;   // 🔑 CLAVE FIREBASE
+  currentMode = '';
+
+  document.getElementById("qrz").value = currentUser;
+  document.getElementById("freq").value = '';
+  document.getElementById("selectedMode").innerText = 'Modo: —';
+  document.getElementById("modal").style.display = 'block';
 }
+
 function setMode(m){ currentMode=m; document.getElementById("selectedMode").innerText='Modo: '+m; }
+
 function saveCell(){
-  if(!document.getElementById("freq").value||!currentMode){alert('Indica frecuencia y modo');return;}
-  currentCell.innerHTML='<strong>'+currentUser+'</strong><br>'+document.getElementById("freq").value+' MHz<br><em>'+currentMode+'</em>';
-  currentCell.classList.add('activo');
-  document.getElementById("modal").style.display='none';
+  const freq = document.getElementById("freq").value;
+
+  if(!freq || !currentMode){
+    alert("Indica frecuencia y modo");
+    return;
+  }
+
+  const data = {
+    qrz: currentUser,
+    freq: freq,
+    modo: currentMode,
+    uid: currentUID
+  };
+
+  firebase.database()
+    .ref("casillas/" + currentBandKey)
+    .set(data)
+    .then(()=>{
+      document.getElementById("modal").style.display = 'none';
+    })
+    .catch(err=>{
+      alert("Error al guardar: " + err.message);
+    });
 }
+firebase.database()
+  .ref("casillas")
+  .on("value", snapshot=>{
+    const data = snapshot.val();
+    if(!data) return;
+
+    document.querySelectorAll("td[data-band]").forEach(td=>{
+      const key = td.dataset.band;
+      if(data[key]){
+        td.innerHTML =
+          "<strong>"+data[key].qrz+"</strong><br>" +
+          data[key].freq+" MHz<br>" +
+          "<em>"+data[key].modo+"</em>";
+        td.classList.add("activo");
+      }else{
+        td.innerHTML = "";
+        td.classList.remove("activo");
+      }
+    });
+  });
+
+
 function clearCell(){
   currentCell.innerHTML=''; currentCell.classList.remove('activo'); document.getElementById("modal").style.display='none';
 }
@@ -436,6 +485,7 @@ setInterval(()=>{document.getElementById("utc").innerText='Hora UTC: '+new Date(
 <script>
 auth.onAuthStateChanged(user=>{
   if(user){
+    currentUID = user.uid;
     db.ref("users/" + user.uid).once("value").then(snap=>{
       if(snap.exists()){
         currentUser = snap.val().indicativo;

@@ -286,6 +286,31 @@ footer{
 <tr><td class="banda">6 m</td><td onclick="openForm(this)" data-band="6-CW"></td><td onclick="openForm(this)" data-band="6-SSB"></td><td onclick="openForm(this)" data-band="6-DIG1"></td><td onclick="openForm(this)" data-band="6-DIG2"></td></tr>
 <tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
 </table>
+<style>
+.iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* relación 16:9 */
+  max-width: 1400px;
+  margin: 35px auto 0 auto;
+  border: 4px solid #003087;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
+
+<div class="iframe-container">
+  <iframe src="https://clublog.org/livestream/EG7DA" allowfullscreen></iframe>
+</div>
 
 </main>
 <footer>© By TOPILLODX</footer>
@@ -446,3 +471,4 @@ db.ref("bands").on("value",snapshot=>{
 
 </body>
 </html>
+

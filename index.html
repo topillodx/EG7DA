@@ -11,6 +11,8 @@ body{
   font-family:'Segoe UI',Arial,Helvetica,sans-serif;
   background:linear-gradient(135deg,#0a5c2f,#1c8a4a);
 }
+
+}
 header img{width:100%;display:block}
 
 /* ===== UTC ===== */
@@ -31,57 +33,59 @@ main{
   padding:25px;
   box-shadow:0 0 20px rgba(0,0,0,.3);
 }
-
-/* ===== TABLA ===== */
+/* ===== TABLA MODERNA ===== */
 table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0;
+  border-spacing: 6px;          /* espacio entre celdas */
   margin-top: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border-radius: 12px;
-  overflow: hidden;
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 th {
   background: #1a6aff;
   color: white;
-  padding: 12px;
-  font-size: 1.2em;
+  padding: 10px;
+  font-size: 1.1em;
   text-align: center;
-  border-bottom: 3px solid #003087;
+  border-radius: 8px;
 }
 
 td {
-  border: 1px solid #ccc;
-  padding: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 6px;
+  width: 80px;                  /* ancho más compacto */
+  height: 40px;                 /* altura más pequeña */
   text-align: center;
-  background:#f9ffe6;
+  background: #fefefe;          /* fondo de celdas vacías */
   cursor: pointer;
-  font-size: 0.9em;
-  transition: background 0.2s, transform 0.15s;
+  font-size: 0.85em;
+  border-radius: 8px;           /* bordes redondeados */
+  transition: all 0.25s ease;
+  position: relative;
+  color: #003087;               /* texto azul oscuro para vacías */
 }
 
 td:hover {
-  background: #ffff66;
-  transform: scale(1.03);
+  background: #ffffcc;           /* efecto hover */
+  transform: scale(1.05);
 }
 
+/* ===== CELDAS DE BANDAS ===== */
 td.banda {
-  background:#d7d7f4;
+  background: #d7d7f4;
   font-weight: bold;
   cursor: default;
-  font-size: 1.8em;
+  font-size: 1.6em;
   color: #ff0000;
 }
 
+/* ===== CELDAS BLOQUEADAS ===== */
 td.bloqueada {
-  background: #ffcccc;
+  background:#3385ff;
   color: #000;
   font-weight: bold;
   cursor: not-allowed;
-  position: relative;
 }
 
 td.bloqueada .tooltip-text {
@@ -109,23 +113,23 @@ td.bloqueada:hover .tooltip-text {
   opacity: 1;
 }
 
+/* ===== CELDAS ACTIVAS ===== */
 td.activo {
-  background: #ff8080;
+  background: #ff8080;           /* fondo de casilla ocupada */
+  color: #000;                   /* texto negro */
   font-weight: bold;
 }
 
-/* bordes redondeados */
+/* ===== BORDES REDONDEADOS DE TABLA ===== */
 table tr:first-child th:first-child { border-top-left-radius: 12px; }
-table tr:first-child th:last-child { border-top-right-radius: 12px; }
-table tr:last-child td:first-child { border-bottom-left-radius: 12px; }
-table tr:last-child td:last-child { border-bottom-right-radius: 12px; }
+table tr:first-child th:last-child  { border-top-right-radius: 12px; }
+table tr:last-child td:first-child  { border-bottom-left-radius: 12px; }
+table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
 
-footer {
-  text-align: center;
-  padding: 18px;
-  background: #003087;
-  color: white;
-  margin-top: 30px;
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px rgba(255,0,0,0.3); }
+  100% { box-shadow: 0 0 18px rgba(255,0,0,0.5); }
 }
 
 /* ===== LOGIN & REGISTER ===== */

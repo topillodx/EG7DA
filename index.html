@@ -310,7 +310,7 @@ footer {
 </head>
 <body>
 
-<div id="utc">Hora UTC: --:--:--</div>
+<div id="utc">Hora UTC: --:--:-- | Fecha: --/--/----</div>
 
 <!-- LOGIN -->
 <div id="loginOverlay">
@@ -620,13 +620,24 @@ function closeModal(){
 }
 
 // ===== UTC =====
-setInterval(()=>{
-  const now=new Date();
-  document.getElementById("utc").innerText="Hora UTC: "+
-    now.getUTCHours().toString().padStart(2,'0')+":"+
-    now.getUTCMinutes().toString().padStart(2,'0')+":"+
-    now.getUTCSeconds().toString().padStart(2,'0');
-},1000);
+setInterval(() => {
+  const now = new Date();
+
+  // Hora UTC
+  const hours = now.getUTCHours().toString().padStart(2,'0');
+  const minutes = now.getUTCMinutes().toString().padStart(2,'0');
+  const seconds = now.getUTCSeconds().toString().padStart(2,'0');
+
+  // Fecha UTC
+  const day = now.getUTCDate().toString().padStart(2,'0');
+  const month = (now.getUTCMonth() + 1).toString().padStart(2,'0'); // Enero = 0
+  const year = now.getUTCFullYear();
+
+  // Actualizar el div
+  document.getElementById("utc").innerText =
+    `Hora UTC: ${hours}:${minutes}:${seconds} | Fecha: ${day}/${month}/${year}`;
+}, 1000);
+
 
 // ===== CARGAR DATOS =====
 auth.onAuthStateChanged(user=>{

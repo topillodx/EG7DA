@@ -273,6 +273,39 @@ footer {
   75%  { transform: rotate(-1deg) translateY(2px); }
   100% { transform: rotate(0deg) translateY(0); }
 }
+/* ===== BOTONES DE ACCIÓN ===== */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centrar los botones */
+  gap: 12px;
+  margin: 15px 0;
+  flex-wrap: wrap; /* Para que se adapten en móvil */
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: #003087;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: transform 0.15s, background 0.2s;
+}
+
+.action-btn:hover {
+  background: #0050c8;
+  transform: scale(1.05);
+}
+
+.btn-icon {
+  font-size: 1.2em;
+}
+
 </style>
 </head>
 <body>
@@ -310,18 +343,20 @@ footer {
 
 <main>
 <!-- USUARIO CONECTADO + LOGOUT -->
-<div style="display:flex; justify-content:space-between; align-items:center; max-width:1400px; margin:auto; padding:10px;">
-  <div id="currentUserDisplay" style="font-weight:bold;color:#003087"></div>
-  <button id="logoutBtn" onclick="logout()" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
-</div>
+<div id="currentUserDisplay" style="font-weight:bold;color:#003087; text-align:center; margin-top:10px;"></div>
 
-<!-- BOTÓN PLAN DE BANDAS -->
-<div style="text-align:center; max-width:1400px; margin:auto; padding:10px;">
-  <button onclick="window.location.href='plan-bandas.html'" 
-          style="padding:10px 18px; background:#003087; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
-    Ver Plan de Bandas
+<div class="button-container">
+  <button class="action-btn" onclick="logout()">
+    <span class="btn-icon">🔒</span> Cerrar sesión
+  </button>
+  <button class="action-btn" onclick="window.location.href='plan-bandas.html'">
+    <span class="btn-icon">📡</span> Plan de Bandas
+  </button>
+  <button class="action-btn" onclick="window.open('https://radioclubsevilla.com/', '_blank')">
+    <span class="btn-icon">🏠</span> Radio Club Sevilla
   </button>
 </div>
+
 
 <div class="titulo-container">
   <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">

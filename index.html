@@ -491,18 +491,39 @@ function logout(){
 
 // ===== MODAL CELDA =====
 function openForm(td){
-  if(!currentUser){ alert("Debes iniciar sesión"); return; }
-  if(td.dataset.user && td.dataset.user !== currentUser && !isAdmin){
-  alert("Esta casilla ya está ocupada por " + td.dataset.user);
-  return;
-}
+  if(!currentUser){ 
+    alert("Debes iniciar sesión"); 
+    return; 
+  }
+
+  // ================= OPERADORES NORMALES SOLO PUEDEN UNA CASILLA =================
+  if(!isAdmin){
+    let tieneCasilla = false;
+    document.querySelectorAll("td.activo").forEach(c => {
+      if(c.dataset.user === currentUser){
+        tieneCasilla = true;
+      }
+    });
+    // Si ya tiene una casilla y la que intenta abrir está vacía => no permitir
+    if(tieneCasilla && !td.classList.contains('activo')){
+      alert("Solo puedes ocupar una casilla a la vez.");
+      return;
+    }
+  }
+
+  // ================= BLOQUEAR CELDAS DE OTROS =================
+  if(!isAdmin && td.dataset.user && td.dataset.user !== currentUser){ 
+    alert("Esta casilla ya está ocupada por " + td.dataset.user); 
+    return; 
+  }
+
   currentCell = td;
   document.getElementById("qrz").value = currentUser;
   document.getElementById("freq").value = td.dataset.freq || '';
   currentMode = td.dataset.mode || '';
-  document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—');
+  document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—') + (isAdmin ? " (Admin: puedes ocupar o liberar cualquier casilla)" : "");
 
-  // Modos permitidos
+  // ================= BOTONES DE MODO SEGÚN EL TIPO DE BANDA =================
   let allowedModes = [];
   const bandType = td.dataset.band.split("-")[1];
   if(bandType==="CW"){ allowedModes=["CW"]; }
@@ -521,6 +542,8 @@ function openForm(td){
 
   document.getElementById("modal").style.display='block';
 }
+
+
 
 function setMode(mode){
   currentMode = mode;
@@ -565,9 +588,15 @@ function saveCell(){
 
 function clearCell(){
   if(!currentCell) return;
-  if(!isAdmin && currentCell.dataset.user !== currentUser){ alert("Solo puedes liberar tu propia casilla."); return; }
+
+  // Solo bloqueamos si NO eres admin y no eres dueño de la celda
+  if(!isAdmin && currentCell.dataset.user !== currentUser){
+    alert("Solo puedes liberar tu propia casilla.");
+    return;
+  }
 
   const cellId = currentCell.dataset.band.replace('-','_');
+
   db.ref("bands/"+cellId).remove()
     .then(()=>{
       currentCell.innerHTML='';
@@ -576,8 +605,13 @@ function clearCell(){
       currentCell.dataset.freq='';
       currentCell.classList.remove('activo');
       closeModal();
+    })
+    .catch(err=>{
+      alert("Error al liberar la casilla: " + err.message);
     });
 }
+
+
 
 function closeModal(){
   document.getElementById("modal").style.display="none";

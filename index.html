@@ -457,7 +457,10 @@ function logout(){
 // ===== MODAL CELDA =====
 function openForm(td){
   if(!currentUser){ alert("Debes iniciar sesión"); return; }
-  if(td.dataset.user && td.dataset.user !== currentUser){ alert("Esta casilla ya está ocupada por " + td.dataset.user); return; }
+  if(td.dataset.user && td.dataset.user !== currentUser && !isAdmin){
+  alert("Esta casilla ya está ocupada por " + td.dataset.user);
+  return;
+}
   currentCell = td;
   document.getElementById("qrz").value = currentUser;
   document.getElementById("freq").value = td.dataset.freq || '';

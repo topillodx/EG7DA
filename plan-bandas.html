@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,6 +13,36 @@ th, td { border:1px solid #ccc; padding:8px; text-align:center;}
 th { background:#1a6aff; color:white;}
 td.bandPlan { background:#e6ffff; font-weight:bold; }
 button { margin-top:10px; padding:8px 14px; background:#003087; color:white; border:none; border-radius:6px; cursor:pointer; }
+
+.volver-container{
+  text-align:center;
+  margin:35px 0 10px 0;
+}
+
+.btn-volver{
+  background:linear-gradient(135deg,#003087,#1a6aff);
+  color:white;
+  border:none;
+  padding:14px 32px;
+  font-size:1.15em;
+  font-weight:bold;
+  border-radius:30px;
+  cursor:pointer;
+  box-shadow:0 6px 15px rgba(0,0,0,0.3);
+  transition:all 0.25s ease;
+}
+
+.btn-volver:hover{
+  background:linear-gradient(135deg,#1a6aff,#003087);
+  transform:translateY(-3px);
+  box-shadow:0 10px 22px rgba(0,0,0,0.4);
+}
+
+.btn-volver:active{
+  transform:translateY(0);
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+
 </style>
 </head>
 <body>
@@ -70,9 +99,9 @@ button { margin-top:10px; padding:8px 14px; background:#003087; color:white; bor
     </a>
   </div>
 
-  <div style="text-align:center;">
-    <button onclick="window.history.back()">Volver</button>
-  </div>
+  <div class="volver-container">
+  <button class="btn-volver" onclick="history.back()">⬅ Volver</button>
+</div>
 
 </main>
 
@@ -80,4 +109,3 @@ button { margin-top:10px; padding:8px 14px; background:#003087; color:white; bor
 
 </body>
 </html>
-

@@ -374,9 +374,9 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
 <tr>
   <th>BANDA</th>
   <th>CW</th>
-  <th>SSB</th>
-  <th>DIG1</th>
-  <th>DIG2</th>
+  <th>SSB+FM</th>
+  <th>RTTY+PSK</th>
+  <th>FT8+FT4</th>
 </tr>
 <tr><td class="banda">80 m</td><td onclick="openForm(this)" data-band="80-CW"></td><td onclick="openForm(this)" data-band="80-SSB"></td><td onclick="openForm(this)" data-band="80-DIG1"></td><td onclick="openForm(this)" data-band="80-DIG2"></td></tr>
 <tr><td class="banda">60 m</td><td onclick="openForm(this)" data-band="60-CW"></td><td onclick="openForm(this)" data-band="60-SSB"></td><td onclick="openForm(this)" data-band="60-DIG1"></td><td onclick="openForm(this)" data-band="60-DIG2"></td></tr>
@@ -544,7 +544,7 @@ if (bandType === "CW") {
 
 // SSB normal
 else if (bandType === "SSB") {
-  if (band === "2") {
+   if (band === "2" || band === "6") {
     // ⭐ SOLO 2m tiene SSB + FM
     allowedModes = ["SSB", "FM"];
   } else {

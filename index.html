@@ -532,11 +532,31 @@ function openForm(td){
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—') + (isAdmin ? " (Admin: puedes ocupar o liberar cualquier casilla)" : "");
 
   // ================= BOTONES DE MODO SEGÚN EL TIPO DE BANDA =================
-  let allowedModes = [];
-  const bandType = td.dataset.band.split("-")[1];
-  if(bandType==="CW"){ allowedModes=["CW"]; }
-  else if(bandType==="SSB"){ allowedModes=["SSB"]; }
-  else{ allowedModes=["FT8","FT4","RTTY","PSK"]; }
+ let allowedModes = [];
+const parts = td.dataset.band.split("-");
+const band = parts[0];      // 80, 40, 2, etc
+const bandType = parts[1];  // CW, SSB, DIG
+
+// CW siempre fijo
+if (bandType === "CW") {
+  allowedModes = ["CW"];
+}
+
+// SSB normal
+else if (bandType === "SSB") {
+  if (band === "2") {
+    // ⭐ SOLO 2m tiene SSB + FM
+    allowedModes = ["SSB", "FM"];
+  } else {
+    allowedModes = ["SSB"];
+  }
+}
+
+// Digitales
+else {
+  allowedModes = ["FT8", "FT4", "RTTY", "PSK"];
+}
+
 
   const btnContainer = document.querySelector(".mode-buttons");
   btnContainer.innerHTML="";

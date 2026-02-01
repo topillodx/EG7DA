@@ -409,7 +409,6 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
 </div>
 
 </main>
-
 <!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
@@ -417,9 +416,12 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
     <input id="qrz" disabled>
     <input id="freq" placeholder="Frecuencia MHz">
 
- <div class="mode-buttons">
-  <!-- Botones de modo se generan dinámicamente -->
-</div>
+    <!-- Info de casilla y banda -->
+    <p id="casillaInfo" style="font-weight:bold; margin-top:8px;"></p>
+
+    <div class="mode-buttons">
+      <!-- Botones de modo se generan dinámicamente -->
+    </div>
 
     <p id="selectedMode">Modo: —</p>
     <button onclick="saveCell()">Guardar</button>
@@ -427,6 +429,7 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
     <button style="background:#777" onclick="closeModal()">Cancelar</button>
   </div>
 </div>
+
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -503,19 +506,18 @@ function openForm(td){
     return; 
   }
 
+  const parts = td.dataset.band.split("-");
+  const band = parts[0];        
+  const bandType = parts[1];    
+
   // ================= REGLAS CW / SSB PARA OPERADORES NORMALES =================
   if (!isAdmin) {
-
-    const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
-
-    // Determinar qué tipo intenta abrir
     const intentaCW  = bandType === "CW";
     const intentaSSB = bandType === "SSB";
 
     let yaTieneCW = false;
     let yaTieneSSB = false;
 
-    // Recorremos todas las celdas activas del usuario
     document.querySelectorAll("td.activo").forEach(c => {
       if (c.dataset.user === currentUser) {
         const t = c.dataset.band.split("-")[1];
@@ -524,26 +526,16 @@ function openForm(td){
       }
     });
 
-    // ❌ No repetir CW
-    if (intentaCW && yaTieneCW && !td.classList.contains("activo")) {
-      alert("Ya tienes una casilla en CW.");
+    // Solo bloquea si es otra casilla, no la que ya es tuya
+    const esMiCasilla = td.dataset.user === currentUser;
+
+    if ((intentaCW && yaTieneCW && !esMiCasilla) || (intentaSSB && yaTieneSSB && !esMiCasilla)) {
+      alert(`Ya tienes una casilla en ${bandType}.`);
       return;
     }
 
-    // ❌ No repetir SSB
-    if (intentaSSB && yaTieneSSB && !td.classList.contains("activo")) {
-      alert("Ya tienes una casilla en SSB.");
-      return;
-    }
-
-    // ❌ No CW + SSB
-    if (intentaCW && yaTieneSSB && !td.classList.contains("activo")) {
+    if ((intentaCW && yaTieneSSB && !esMiCasilla) || (intentaSSB && yaTieneCW && !esMiCasilla)) {
       alert("No puedes estar en CW y SSB al mismo tiempo.");
-      return;
-    }
-
-    if (intentaSSB && yaTieneCW && !td.classList.contains("activo")) {
-      alert("No puedes estar en SSB y CW al mismo tiempo.");
       return;
     }
   }
@@ -559,35 +551,26 @@ function openForm(td){
   document.getElementById("qrz").value = currentUser;
   document.getElementById("freq").value = td.dataset.freq || '';
   currentMode = td.dataset.mode || '';
+
+  // Mostrar info de casilla y banda
+  const info = (bandType === "CW" || bandType === "SSB")
+    ? `${band} m - ${bandType}`
+    : `${band} m - Digital (${bandType})`;
+  document.getElementById("casillaInfo").innerText = info;
+
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—') + (isAdmin ? " (Admin: puedes ocupar o liberar cualquier casilla)" : "");
 
   // ================= BOTONES DE MODO SEGÚN EL TIPO DE BANDA =================
   let allowedModes = [];
-  const parts = td.dataset.band.split("-");
-  const band = parts[0];      // 80, 40, 2, etc
-  const bandTypeMode = parts[1];  // CW, SSB, DIG
 
-  // CW siempre fijo
-  if (bandTypeMode === "CW") {
+  if (bandType === "CW") {
     allowedModes = ["CW"];
+  } else if (bandType === "SSB") {
+    allowedModes = (band === "2" || band === "6") ? ["SSB","FM"] : ["SSB"];
+  } else {
+    allowedModes = ["FT8","FT4","RTTY","PSK"];
   }
 
-  // SSB normal
-  else if (bandTypeMode === "SSB") {
-    if (band === "2" || band === "6") {
-      // ⭐ SOLO 2m tiene SSB + FM
-      allowedModes = ["SSB", "FM"];
-    } else {
-      allowedModes = ["SSB"];
-    }
-  }
-
-  // Digitales
-  else {
-    allowedModes = ["FT8", "FT4", "RTTY", "PSK"];
-  }
-
-  // Crear botones dinámicos
   const btnContainer = document.querySelector(".mode-buttons");
   btnContainer.innerHTML="";
   allowedModes.forEach(m=>{
@@ -598,9 +581,34 @@ function openForm(td){
     btnContainer.appendChild(btn);
   });
 
-  // Mostrar modal
   document.getElementById("modal").style.display='block';
 }
+function clearCell(){
+  if(!currentCell) return;
+
+  // Admin puede liberar cualquier casilla, usuario normal solo la suya
+  if(!isAdmin && currentCell.dataset.user !== currentUser){
+    alert("Solo puedes liberar tu propia casilla.");
+    return;
+  }
+
+  const cellId = currentCell.dataset.band.replace('-','_');
+
+  db.ref("bands/"+cellId).remove()
+    .then(()=>{
+      currentCell.innerHTML='';
+      currentCell.dataset.user='';
+      currentCell.dataset.mode='';
+      currentCell.dataset.freq='';
+      currentCell.classList.remove('activo');
+      closeModal();
+    })
+    .catch(err=>{
+      alert("Error al liberar la casilla: " + err.message);
+    });
+}
+
+
 
 
 
@@ -645,33 +653,6 @@ function saveCell(){
     .then(()=>{ document.getElementById("modal").style.display='none'; })
     .catch(err=>{ alert("Error al guardar: " + err.message); });
 }
-
-function clearCell(){
-  if(!currentCell) return;
-
-  // Solo bloqueamos si NO eres admin y no eres dueño de la celda
-  if(!isAdmin && currentCell.dataset.user !== currentUser){
-    alert("Solo puedes liberar tu propia casilla.");
-    return;
-  }
-
-  const cellId = currentCell.dataset.band.replace('-','_');
-
-  db.ref("bands/"+cellId).remove()
-    .then(()=>{
-      currentCell.innerHTML='';
-      currentCell.dataset.user='';
-      currentCell.dataset.mode='';
-      currentCell.dataset.freq='';
-      currentCell.classList.remove('activo');
-      closeModal();
-    })
-    .catch(err=>{
-      alert("Error al liberar la casilla: " + err.message);
-    });
-}
-
-
 
 function closeModal(){
   document.getElementById("modal").style.display="none";

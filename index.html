@@ -496,7 +496,6 @@ function logout(){
       document.getElementById("currentUserDisplay").innerText="";
     });
 }
-
 // ===== MODAL CELDA =====
 function openForm(td){
   if(!currentUser){ 
@@ -504,36 +503,50 @@ function openForm(td){
     return; 
   }
 
-if (!isAdmin) {
+  // ================= REGLAS CW / SSB PARA OPERADORES NORMALES =================
+  if (!isAdmin) {
 
-  const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
+    const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
 
-  // Determinar qué tipo intenta abrir
-  const intentaCW  = bandType === "CW";
-  const intentaSSB = bandType === "SSB";
+    // Determinar qué tipo intenta abrir
+    const intentaCW  = bandType === "CW";
+    const intentaSSB = bandType === "SSB";
 
-  let yaTieneCW = false;
-  let yaTieneSSB = false;
+    let yaTieneCW = false;
+    let yaTieneSSB = false;
 
-  document.querySelectorAll("td.activo").forEach(c => {
-    if (c.dataset.user === currentUser) {
-      const t = c.dataset.band.split("-")[1];
-      if (t === "CW")  yaTieneCW = true;
-      if (t === "SSB") yaTieneSSB = true;
+    // Recorremos todas las celdas activas del usuario
+    document.querySelectorAll("td.activo").forEach(c => {
+      if (c.dataset.user === currentUser) {
+        const t = c.dataset.band.split("-")[1];
+        if (t === "CW")  yaTieneCW = true;
+        if (t === "SSB") yaTieneSSB = true;
+      }
+    });
+
+    // ❌ No repetir CW
+    if (intentaCW && yaTieneCW && !td.classList.contains("activo")) {
+      alert("Ya tienes una casilla en CW.");
+      return;
     }
-  });
 
-  // Reglas de exclusión CW / SSB
-  if (intentaCW && yaTieneSSB && !td.classList.contains("activo")) {
-    alert("No puedes estar en CW y SSB al mismo tiempo.");
-    return;
-  }
+    // ❌ No repetir SSB
+    if (intentaSSB && yaTieneSSB && !td.classList.contains("activo")) {
+      alert("Ya tienes una casilla en SSB.");
+      return;
+    }
 
-  if (intentaSSB && yaTieneCW && !td.classList.contains("activo")) {
-    alert("No puedes estar en SSB y CW al mismo tiempo.");
-    return;
+    // ❌ No CW + SSB
+    if (intentaCW && yaTieneSSB && !td.classList.contains("activo")) {
+      alert("No puedes estar en CW y SSB al mismo tiempo.");
+      return;
+    }
+
+    if (intentaSSB && yaTieneCW && !td.classList.contains("activo")) {
+      alert("No puedes estar en SSB y CW al mismo tiempo.");
+      return;
+    }
   }
-}
 
   // ================= BLOQUEAR CELDAS DE OTROS =================
   if(!isAdmin && td.dataset.user && td.dataset.user !== currentUser){ 
@@ -541,6 +554,7 @@ if (!isAdmin) {
     return; 
   }
 
+  // ================= CONFIGURAR MODAL =================
   currentCell = td;
   document.getElementById("qrz").value = currentUser;
   document.getElementById("freq").value = td.dataset.freq || '';
@@ -548,32 +562,32 @@ if (!isAdmin) {
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—') + (isAdmin ? " (Admin: puedes ocupar o liberar cualquier casilla)" : "");
 
   // ================= BOTONES DE MODO SEGÚN EL TIPO DE BANDA =================
- let allowedModes = [];
-const parts = td.dataset.band.split("-");
-const band = parts[0];      // 80, 40, 2, etc
-const bandType = parts[1];  // CW, SSB, DIG
+  let allowedModes = [];
+  const parts = td.dataset.band.split("-");
+  const band = parts[0];      // 80, 40, 2, etc
+  const bandTypeMode = parts[1];  // CW, SSB, DIG
 
-// CW siempre fijo
-if (bandType === "CW") {
-  allowedModes = ["CW"];
-}
-
-// SSB normal
-else if (bandType === "SSB") {
-   if (band === "2" || band === "6") {
-    // ⭐ SOLO 2m tiene SSB + FM
-    allowedModes = ["SSB", "FM"];
-  } else {
-    allowedModes = ["SSB"];
+  // CW siempre fijo
+  if (bandTypeMode === "CW") {
+    allowedModes = ["CW"];
   }
-}
 
-// Digitales
-else {
-  allowedModes = ["FT8", "FT4", "RTTY", "PSK"];
-}
+  // SSB normal
+  else if (bandTypeMode === "SSB") {
+    if (band === "2" || band === "6") {
+      // ⭐ SOLO 2m tiene SSB + FM
+      allowedModes = ["SSB", "FM"];
+    } else {
+      allowedModes = ["SSB"];
+    }
+  }
 
+  // Digitales
+  else {
+    allowedModes = ["FT8", "FT4", "RTTY", "PSK"];
+  }
 
+  // Crear botones dinámicos
   const btnContainer = document.querySelector(".mode-buttons");
   btnContainer.innerHTML="";
   allowedModes.forEach(m=>{
@@ -584,8 +598,10 @@ else {
     btnContainer.appendChild(btn);
   });
 
+  // Mostrar modal
   document.getElementById("modal").style.display='block';
 }
+
 
 
 

@@ -374,7 +374,7 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
 <tr>
   <th>BANDA</th>
   <th>CW</th>
-  <th>FONIA</th>
+  <th>SSB+FM</th>
   <th>RTTY+PSK</th>
   <th>FT8+FT4</th>
 </tr>
@@ -504,20 +504,36 @@ function openForm(td){
     return; 
   }
 
-  // ================= OPERADORES NORMALES SOLO PUEDEN UNA CASILLA =================
-  if(!isAdmin){
-    let tieneCasilla = false;
-    document.querySelectorAll("td.activo").forEach(c => {
-      if(c.dataset.user === currentUser){
-        tieneCasilla = true;
-      }
-    });
-    // Si ya tiene una casilla y la que intenta abrir está vacía => no permitir
-    if(tieneCasilla && !td.classList.contains('activo')){
-      alert("Solo puedes ocupar una casilla a la vez.");
-      return;
+if (!isAdmin) {
+
+  const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
+
+  // Determinar qué tipo intenta abrir
+  const intentaCW  = bandType === "CW";
+  const intentaSSB = bandType === "SSB";
+
+  let yaTieneCW = false;
+  let yaTieneSSB = false;
+
+  document.querySelectorAll("td.activo").forEach(c => {
+    if (c.dataset.user === currentUser) {
+      const t = c.dataset.band.split("-")[1];
+      if (t === "CW")  yaTieneCW = true;
+      if (t === "SSB") yaTieneSSB = true;
     }
+  });
+
+  // Reglas de exclusión CW / SSB
+  if (intentaCW && yaTieneSSB && !td.classList.contains("activo")) {
+    alert("No puedes estar en CW y SSB al mismo tiempo.");
+    return;
   }
+
+  if (intentaSSB && yaTieneCW && !td.classList.contains("activo")) {
+    alert("No puedes estar en SSB y CW al mismo tiempo.");
+    return;
+  }
+}
 
   // ================= BLOQUEAR CELDAS DE OTROS =================
   if(!isAdmin && td.dataset.user && td.dataset.user !== currentUser){ 
@@ -735,4 +751,3 @@ function blockedAlert(cell) {
 
 </body>
 </html>
-

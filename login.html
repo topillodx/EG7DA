@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,229 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EG7DA – Día de Andalucía</title>
 <style>
-/* ===== BODY ===== */
-body{
+body {
   margin:0;
   font-family:'Segoe UI',Arial,Helvetica,sans-serif;
   background:linear-gradient(135deg,#0a5c2f,#1c8a4a);
 }
 header img{width:100%;display:block}
-
-/* ===== UTC ===== */
-#utc{
-  background:#003087;
-  color:white;
-  text-align:center;
-  font-size:1.4em;
-  font-weight:bold;
-  padding:10px;
-}
-
-/* ===== MAIN ===== */
-main{
-  max-width:1400px;
-  margin:auto;
-  background:white;
-  padding:25px;
-  box-shadow:0 0 20px rgba(0,0,0,.3);
-}
-
-/* ===== TABLA ===== */
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:25px;
-}
-th{
-  background:#1a6aff;
-  color:white;
-  padding:12px;
-  font-size:1.2em;
-}
-td{
-  border:1px solid #ccc;
-  padding:6px;
-  text-align:center;
-  background:#f2ffcc;
-  cursor:pointer;
-  font-size:.85em;
-  min-width:90px;
-}
-td.banda{
-  background:#c2c2ef;
-  font-weight:bold;
-  cursor:default;
-  font-size:1.8em;
-  color:#ff0000;
-}
-td.bloqueada {
-  background:#e6ffff; /* rojo claro */
-  color: #000000;
-  font-weight: bold;
-  text-align: center;
-  cursor: not-allowed;
-}
-td.bloqueada:hover {
-  background:#006600; /* sin efecto hover */
-  transform: none;
-}
-
+#utc{background:#003087;color:white;text-align:center;font-size:1.4em;font-weight:bold;padding:10px;}
+main{max-width:1400px;margin:auto;background:white;padding:25px;box-shadow:0 0 20px rgba(0,0,0,.3);}
+table{width:100%;border-collapse:collapse;margin-top:25px;}
+th{background:#1a6aff;color:white;padding:12px;font-size:1.2em;}
+td{border:1px solid #ccc;padding:6px;text-align:center;background:#f2ffcc;cursor:pointer;font-size:.85em;min-width:90px;}
+td.banda{background:#c2c2ef;font-weight:bold;cursor:default;font-size:1.8em;color:#ff0000;}
 td:hover{background:#ffff66;transform:scale(1.03);transition:.15s}
-td.activo{background:#ff8080;font-weight:bold}
-
-footer{
-  text-align:center;
-  padding:18px;
-  background:#003087;
-  color:white;
-  margin-top:30px;
-}
-
-/* ===== LOGIN & REGISTER ===== */
-#loginOverlay, #registerOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
-.overlay-box{
-  background:white;
-  padding:35px;
-  border-radius:12px;
-  max-width:360px;
-  width:100%;
-  text-align:center;
-}
-.overlay-box input{
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  font-size:1em;
-}
-.overlay-box button{
-  margin-top:18px;
-  padding:12px;
-  width:100%;
-  background:#00cc66;
-  color:white;
-  border:none;
-  font-size:1.1em;
-  cursor:pointer;
-}
-
-/* ===== MODAL ===== */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-}
-.modal-content{
-  background:white;
-  max-width:280px;
-  margin:10% auto;
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
-}
-.modal-content h3{
-  margin:0 0 8px 0;
-  font-size:1.1em;
-  color:#0a5c2f;
-}
-.modal-content input{
-  width:100%;
-  padding:7px;
-  margin-top:6px;
-  font-size:1.05em;
-}
-#selectedMode{
-  font-weight:bold;
-  margin-top:10px;
-  font-size:1em;
-}
-.modal-content button{
-  margin-top:8px;
-  padding:8px;
-  width:100%;
-  border:none;
-  cursor:pointer;
-  background:#0a5c2f;
-  color:white;
-}
+td.activo{background:#ff8080;font-weight:bold;}
+footer{text-align:center;padding:18px;background:#003087;color:white;margin-top:30px;}
+#loginOverlay,#registerOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.overlay-box{background:white;padding:35px;border-radius:12px;max-width:360px;width:100%;text-align:center;}
+.overlay-box input{width:100%;padding:12px;margin-top:12px;font-size:1em;}
+.overlay-box button{margin-top:18px;padding:12px;width:100%;background:#00cc66;color:white;border:none;font-size:1.1em;cursor:pointer;}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);}
+.modal-content{background:white;max-width:280px;margin:10% auto;padding:15px;border-radius:10px;text-align:center;}
+.modal-content h3{margin:0 0 8px 0;font-size:1.1em;color:#0a5c2f;}
+.modal-content input{width:100%;padding:7px;margin-top:6px;font-size:1.05em;}
+#selectedMode{font-weight:bold;margin-top:10px;font-size:1em;}
+.modal-content button{margin-top:8px;padding:8px;width:100%;border:none;cursor:pointer;background:#0a5c2f;color:white;}
 .modal-content .red{background:#c0392b}
-.mode-btn{
-  padding:5px 7px;
-  margin:3px;
-  font-size:.8em;
-  border:none;
-  background:#003087;
-  color:white;
-  cursor:pointer;
-  border-radius:5px;
-}
+.mode-btn{padding:5px 7px;margin:3px;font-size:.8em;border:none;background:#003087;color:white;cursor:pointer;border-radius:5px;}
 .mode-btn:hover{background:#0050c8}
-
-/* ===== TITULOS 3D + BANDERAS ===== */
-.titulo-container{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
-  margin-top:10px;
-}
-.bandera{
-  width:70px;
-  height:auto;
-  filter: drop-shadow(3px 3px 5px rgba(0,0,0,.45));
-  animation:ondear 3s ease-in-out infinite;
-}
-.titulo-3d{
-  font-size:3.8em;
-  font-weight:900;
-  letter-spacing:4px;
-  margin:0;
-  color:#1e7f3b;
-  text-shadow:
-    1px 1px 0 #145a2a,
-    2px 2px 0 #145a2a,
-    3px 3px 0 #145a2a,
-    4px 4px 0 #0a3d1c,
-    6px 6px 14px rgba(0,0,0,.45);
-  animation:glow 3s infinite ease-in-out;
-}
+.titulo-container{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;}
+.bandera{width:70px;height:auto;filter: drop-shadow(3px 3px 5px rgba(0,0,0,.45));animation:ondear 3s ease-in-out infinite;}
+.titulo-3d{font-size:3.8em;font-weight:900;letter-spacing:4px;margin:0;color:#1e7f3b;text-shadow:1px 1px 0 #145a2a,2px 2px 0 #145a2a,3px 3px 0 #145a2a,4px 4px 0 #0a3d1c,6px 6px 14px rgba(0,0,0,.45);animation:glow 3s infinite ease-in-out;}
 .titulo-3d span{color:#ffd966;}
-.subtitulo-3d{
-  text-align:center;
-  font-size:1.9em;
-  font-weight:800;
-  letter-spacing:2px;
-  margin-top:6px;
-  background:linear-gradient(90deg,#0a5c2f,#ffffff,#0a5c2f);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:1px 1px 0 rgba(0,0,0,.3),3px 3px 6px rgba(0,0,0,.35);
-}
-@keyframes glow{
-  0%{text-shadow:0 0 8px rgba(255,255,255,.3)}
-  50%{text-shadow:0 0 16px rgba(255,255,255,.6)}
-  100%{text-shadow:0 0 8px rgba(255,255,255,.3)}
-}
-@media(max-width:768px){
-  .titulo-3d{font-size:2.6em}
-  .subtitulo-3d{font-size:1.4em}
-  .bandera{width:48px}
-}
-@keyframes ondear {
-  0%   { transform: rotate(0deg) translateY(0); }
-  25%  { transform: rotate(1deg) translateY(-2px); }
-  50%  { transform: rotate(0deg) translateY(0); }
-  75%  { transform: rotate(-1deg) translateY(2px); }
-  100% { transform: rotate(0deg) translateY(0); }
-}
+.subtitulo-3d{text-align:center;font-size:1.9em;font-weight:800;letter-spacing:2px;margin-top:6px;background:linear-gradient(90deg,#0a5c2f,#ffffff,#0a5c2f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:1px 1px 0 rgba(0,0,0,.3),3px 3px 6px rgba(0,0,0,.35);}
+@keyframes glow{0%{text-shadow:0 0 8px rgba(255,255,255,.3)}50%{text-shadow:0 0 16px rgba(255,255,255,.6)}100%{text-shadow:0 0 8px rgba(255,255,255,.3)}}
+@media(max-width:768px){.titulo-3d{font-size:2.6em}.subtitulo-3d{font-size:1.4em}.bandera{width:48px}}
+@keyframes ondear{0%{transform: rotate(0deg) translateY(0);}25%{transform: rotate(1deg) translateY(-2px);}50%{transform: rotate(0deg) translateY(0);}75%{transform: rotate(-1deg) translateY(2px);}100%{transform: rotate(0deg) translateY(0);}}
 </style>
 </head>
 <body>
@@ -269,15 +81,6 @@ footer{
   <button id="logoutBtn" style="background:#c0392b;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Cerrar sesión</button>
 </div>
 
-<!-- BOTÓN PLAN DE BANDAS -->
-<div style="text-align:center; max-width:1400px; margin:auto; padding:10px;">
-  <button onclick="window.location.href='plan-bandas.html'" 
-          style="padding:10px 18px; background:#003087; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
-    Ver Plan de Bandas
-  </button>
-</div>
-
-
 <div class="titulo-container">
   <img src="img/bandera_andalucia.jpg" class="bandera" alt="Bandera Andalucía">
   <h1 class="titulo-3d">EG<span>7</span>DA</h1>
@@ -294,29 +97,85 @@ footer{
   <th>DIG1</th>
   <th>DIG2</th>
 </tr>
-<tr><td class="banda">80 m</td><td onclick="openForm(this)" data-band="80-CW"></td><td onclick="openForm(this)" data-band="80-SSB"></td><td onclick="openForm(this)" data-band="80-DIG1"></td><td onclick="openForm(this)" data-band="80-DIG2"></td></tr>
-<tr><td class="banda">60 m</td><td onclick="openForm(this)" data-band="60-CW"></td><td onclick="openForm(this)" data-band="60-SSB"></td><td onclick="openForm(this)" data-band="60-DIG1"></td><td onclick="openForm(this)" data-band="60-DIG2"></td></tr>
-<tr><td class="banda">40 m</td><td onclick="openForm(this)" data-band="40-CW"></td><td onclick="openForm(this)" data-band="40-SSB"></td><td onclick="openForm(this)" data-band="40-DIG1"></td><td onclick="openForm(this)" data-band="40-DIG2"></td></tr>
-<tr><td class="banda">30 m</td><td onclick="openForm(this)" data-band="30-CW"></td><td class="bloqueada" data-band="30-SSB">BLOQUEADO</td><td onclick="openForm(this)" data-band="30-DIG1"></td><td onclick="openForm(this)" data-band="30-DIG2"></td></tr>
-<tr><td class="banda">20 m</td><td onclick="openForm(this)" data-band="20-CW"></td><td onclick="openForm(this)" data-band="20-SSB"></td><td onclick="openForm(this)" data-band="20-DIG1"></td><td onclick="openForm(this)" data-band="20-DIG2"></td></tr>
-<tr><td class="banda">17 m</td><td onclick="openForm(this)" data-band="17-CW"></td><td onclick="openForm(this)" data-band="17-SSB"></td><td onclick="openForm(this)" data-band="17-DIG1"></td><td onclick="openForm(this)" data-band="17-DIG2"></td></tr>
-<tr><td class="banda">15 m</td><td onclick="openForm(this)" data-band="15-CW"></td><td onclick="openForm(this)" data-band="15-SSB"></td><td onclick="openForm(this)" data-band="15-DIG1"></td><td onclick="openForm(this)" data-band="15-DIG2"></td></tr>
-<tr><td class="banda">12 m</td><td onclick="openForm(this)" data-band="12-CW"></td><td onclick="openForm(this)" data-band="12-SSB"></td><td onclick="openForm(this)" data-band="12-DIG1"></td><td onclick="openForm(this)" data-band="12-DIG2"></td></tr>
-<tr><td class="banda">10 m</td><td onclick="openForm(this)" data-band="10-CW"></td><td onclick="openForm(this)" data-band="10-SSB"></td><td onclick="openForm(this)" data-band="10-DIG1"></td><td onclick="openForm(this)" data-band="10-DIG2"></td></tr>
-<tr><td class="banda">6 m</td><td onclick="openForm(this)" data-band="6-CW"></td><td onclick="openForm(this)" data-band="6-SSB"></td><td onclick="openForm(this)" data-band="6-DIG1"></td><td onclick="openForm(this)" data-band="6-DIG2"></td></tr>
-<tr><td class="banda">2 m</td><td onclick="openForm(this)" data-band="2-CW"></td><td onclick="openForm(this)" data-band="2-SSB"></td><td onclick="openForm(this)" data-band="2-DIG1"></td><td onclick="openForm(this)" data-band="2-DIG2"></td></tr>
-</table>
-  <!-- PANEL RADIO -->
-    <div class="radio-panel">
-        <div style="border:4px solid #003087;border-radius:12px;overflow:hidden">
-            <iframe 
-                src="https://clublog.org/livestream/EG7DA"
-                width="100%"
-                height="600"
-                style="border:none;">
-            </iframe>
-        </div>
 
+<tr>
+  <td class="banda">80 m</td>
+  <td onclick="openForm(this)" data-band="80-CW"></td>
+  <td onclick="openForm(this)" data-band="80-SSB"></td>
+  <td onclick="openForm(this)" data-band="80-DIG1"></td>
+  <td onclick="openForm(this)" data-band="80-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">60 m</td>
+  <td onclick="openForm(this)" data-band="60-CW"></td>
+  <td onclick="openForm(this)" data-band="60-SSB"></td>
+  <td onclick="openForm(this)" data-band="60-DIG1"></td>
+  <td onclick="openForm(this)" data-band="60-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">40 m</td>
+  <td onclick="openForm(this)" data-band="40-CW"></td>
+  <td onclick="openForm(this)" data-band="40-SSB"></td>
+  <td onclick="openForm(this)" data-band="40-DIG1"></td>
+  <td onclick="openForm(this)" data-band="40-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">30 m</td>
+  <td onclick="openForm(this)" data-band="30-CW"></td>
+  <td onclick="openForm(this)" data-band="30-SSB"></td>
+  <td onclick="openForm(this)" data-band="30-DIG1"></td>
+  <td onclick="openForm(this)" data-band="30-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">20 m</td>
+  <td onclick="openForm(this)" data-band="20-CW"></td>
+  <td onclick="openForm(this)" data-band="20-SSB"></td>
+  <td onclick="openForm(this)" data-band="20-DIG1"></td>
+  <td onclick="openForm(this)" data-band="20-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">17 m</td>
+  <td onclick="openForm(this)" data-band="17-CW"></td>
+  <td onclick="openForm(this)" data-band="17-SSB"></td>
+  <td onclick="openForm(this)" data-band="17-DIG1"></td>
+  <td onclick="openForm(this)" data-band="17-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">15 m</td>
+  <td onclick="openForm(this)" data-band="15-CW"></td>
+  <td onclick="openForm(this)" data-band="15-SSB"></td>
+  <td onclick="openForm(this)" data-band="15-DIG1"></td>
+  <td onclick="openForm(this)" data-band="15-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">12 m</td>
+  <td onclick="openForm(this)" data-band="12-CW"></td>
+  <td onclick="openForm(this)" data-band="12-SSB"></td>
+  <td onclick="openForm(this)" data-band="12-DIG1"></td>
+  <td onclick="openForm(this)" data-band="12-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">10 m</td>
+  <td onclick="openForm(this)" data-band="10-CW"></td>
+  <td onclick="openForm(this)" data-band="10-SSB"></td>
+  <td onclick="openForm(this)" data-band="10-DIG1"></td>
+  <td onclick="openForm(this)" data-band="10-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">6 m</td>
+  <td onclick="openForm(this)" data-band="6-CW"></td>
+  <td onclick="openForm(this)" data-band="6-SSB"></td>
+  <td onclick="openForm(this)" data-band="6-DIG1"></td>
+  <td onclick="openForm(this)" data-band="6-DIG2"></td>
+</tr>
+<tr>
+  <td class="banda">2 m</td>
+  <td onclick="openForm(this)" data-band="2-CW"></td>
+  <td onclick="openForm(this)" data-band="2-SSB"></td>
+  <td onclick="openForm(this)" data-band="2-DIG1"></td>
+  <td onclick="openForm(this)" data-band="2-DIG2"></td>
+</tr>
+</table>
 
 </main>
 <footer>© By TOPILLODX</footer>
@@ -327,15 +186,17 @@ footer{
     <h3>Datos de transmisión</h3>
     <input id="qrz" disabled>
     <input id="freq" placeholder="Frecuencia MHz">
-
- <div class="mode-buttons">
-  <!-- Los botones se generarán aquí según la celda -->
-</div>
-
+    <div>
+      <button class="mode-btn" onclick="setMode('CW')">CW</button>
+      <button class="mode-btn" onclick="setMode('SSB')">SSB</button>
+      <button class="mode-btn" onclick="setMode('FT8')">FT8</button>
+      <button class="mode-btn" onclick="setMode('FT4')">FT4</button>
+      <button class="mode-btn" onclick="setMode('RTTY')">RTTY</button>
+      <button class="mode-btn" onclick="setMode('PSK')">PSK</button>
+    </div>
     <p id="selectedMode">Modo: —</p>
     <button onclick="saveCell()">Guardar</button>
     <button class="red" onclick="clearCell()">Liberar banda</button>
-    <button style="background:#777" onclick="closeModal()">Cancelar</button>
   </div>
 </div>
 
@@ -345,7 +206,7 @@ footer{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ================== JAVASCRIPT COMPLETO ==================
+// CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
   authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
@@ -356,194 +217,93 @@ const firebaseConfig = {
   appId: "1:100328196767:web:d6a847a4a9f15c7eac70aa"
 };
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.database();
 
-let currentUser = '', currentUID = null, currentCell = null, currentMode = '';
+let currentUser='', currentUID=null, currentCell=null, currentMode='';
 
-// ===== LOGIN / REGISTER =====
-function showRegister(){ document.getElementById("loginOverlay").style.display='none'; document.getElementById("registerOverlay").style.display='flex'; }
-function showLogin(){ document.getElementById("registerOverlay").style.display='none'; document.getElementById("loginOverlay").style.display='flex'; }
+// LOGIN/REGISTER
+function showRegister(){document.getElementById("loginOverlay").style.display='none';document.getElementById("registerOverlay").style.display='flex';}
+function showLogin(){document.getElementById("registerOverlay").style.display='none';document.getElementById("loginOverlay").style.display='flex';}
 
 function registerUser(){
-  const email=document.getElementById("regEmail").value;
-  const pass=document.getElementById("regPass").value;
-  const indicativo=document.getElementById("regUser").value.toUpperCase();
-  auth.createUserWithEmailAndPassword(email,pass)
-    .then(cred=>db.ref("users/"+cred.user.uid).set({email,indicativo}))
-    .then(()=>{alert("Usuario registrado. Inicia sesión."); showLogin();})
-    .catch(err=>{const regError=document.getElementById("regError"); regError.innerText=err.message; regError.style.display='block';});
+  const email = document.getElementById("regEmail").value;
+  const pass = document.getElementById("regPass").value;
+  const indicativo = document.getElementById("regUser").value.toUpperCase();
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then((cred)=>db.ref("users/" + cred.user.uid).set({ email, indicativo }))
+    .then(()=>{alert("Usuario registrado correctamente. Inicia sesión.");showLogin();})
+    .catch(err=>{const regError = document.getElementById("regError"); regError.innerText = err.message; regError.style.display = 'block';});
 }
 
 function loginUser(){
-  const email=document.getElementById("loginUser").value;
-  const pass=document.getElementById("loginPass").value;
-  auth.signInWithEmailAndPassword(email,pass)
-    .then(cred=>db.ref("users/"+cred.user.uid).once("value"))
-    .then(snapshot=>{currentUID=snapshot.key; currentUser=snapshot.val().indicativo; document.getElementById("loginOverlay").style.display='none';})
-    .catch(err=>{const loginError=document.getElementById("loginError"); loginError.innerText=err.message; loginError.style.display='block';});
+  const email = document.getElementById("loginUser").value;
+  const pass = document.getElementById("loginPass").value;
+  auth.signInWithEmailAndPassword(email, pass)
+    .then((cred)=>db.ref("users/" + cred.user.uid).once("value"))
+    .then(snapshot=>{currentUID = snapshot.key; currentUser = snapshot.val().indicativo; document.getElementById("loginOverlay").style.display='none';})
+    .catch(err=>{const loginError = document.getElementById("loginError"); loginError.innerText = err.message; loginError.style.display = 'block';});
 }
 
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-  auth.signOut().then(()=>{currentUser=''; currentUID=null; document.getElementById("loginOverlay").style.display='flex';});
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+  auth.signOut().then(()=>{currentUser='';currentUID=null;document.getElementById("loginOverlay").style.display='flex';});
 });
 
-// ===== MODAL CELDA =====
-function openForm(td){
-  if(!currentUser){
-    alert("Debes iniciar sesión");
-    return;
-  }
-
-  // Bloqueo si celda ocupada por otro operador
-  if(td.dataset.user && td.dataset.user !== currentUser){
-    alert("Esta casilla ya está ocupada por " + td.dataset.user);
-    return;
-  }
-
-  currentCell = td;
-  document.getElementById("qrz").value = currentUser;          // Operador
-  document.getElementById("freq").value = td.dataset.freq || ''; // Frecuencia
-  currentMode = td.dataset.mode || '';
-  document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—');
-
-  // Determinar modos permitidos
-  let allowedModes = [];
-  const bandType = td.dataset.band.split("-")[1]; // CW, SSB, DIG1, DIG2
-  if(bandType === "CW"){ allowedModes = ["CW"]; }
-  else if(bandType === "SSB"){ allowedModes = ["SSB"]; }
-  else { allowedModes = ["FT8","FT4","RTTY","PSK"]; }
-
-  // Actualizar botones de modo sin tocar el resto del modal
-  const btnContainer = document.querySelector(".mode-buttons");
-  btnContainer.innerHTML = ""; // Limpiar botones previos
-  allowedModes.forEach(m => {
-    const btn = document.createElement("button");
-    btn.className = "mode-btn";
-    btn.innerText = m;
-    btn.onclick = () => setMode(m);
-    btnContainer.appendChild(btn);
-  });
-
-  document.getElementById("modal").style.display = 'block';
-}
-
-
-function setMode(mode){
-  currentMode = mode;
-  document.getElementById("selectedMode").innerText = "Modo: " + mode;
-}
+// MODAL CELDA
+function openForm(td){if(!currentUser){alert("Debes iniciar sesión");return;} currentCell=td; document.getElementById("qrz").value=currentUser; document.getElementById("freq").value=td.dataset.freq||''; currentMode=td.dataset.mode||''; document.getElementById("selectedMode").innerText="Modo: "+(currentMode||'—'); document.getElementById("modal").style.display='block';}
+function setMode(mode){currentMode=mode; document.getElementById("selectedMode").innerText="Modo: "+mode;}
 
 function saveCell(){
   if(!currentCell) return;
-
-  if(!currentMode){
-    alert("Selecciona un modo válido");
-    return;
-  }
-
-  // Guardar datos en la celda
-  const freq = document.getElementById("freq").value || '';
-  currentCell.innerHTML = `<strong>${currentUser}</strong><br>${freq} MHz<br><em>${currentMode}</em>`;
-  currentCell.classList.add('activo');
-
-  currentCell.dataset.user = currentUser;
-  currentCell.dataset.mode = currentMode;
-  currentCell.dataset.freq = freq;
-
-  // Guardar en Firebase
-  const bandKey = currentCell.dataset.band.replace('-','_');
-  db.ref('bands/' + bandKey).set({
-    user: currentUser,
-    mode: currentMode,
-    freq: freq
-  }).then(()=>{ closeModal(); })
-  .catch(err=>{ alert("Error al guardar: "+err.message); });
+  const freq = document.getElementById("freq").value;
+  const cellId = currentCell.dataset.band.replace('-','_');
+  db.ref("bands/"+cellId).set({user:currentUser,mode:currentMode,freq}).then(()=>{
+    currentCell.innerHTML=`<strong>${currentUser}</strong><br><em>${currentMode}</em><br>${freq} MHz`;
+    currentCell.dataset.mode=currentMode;
+    currentCell.dataset.freq=freq;
+    currentCell.classList.add('activo');
+    closeModal();
+  }).catch(err=>alert("Error al guardar: "+err.message));
 }
-
 
 function clearCell(){
   if(!currentCell) return;
-
-  // 🔐 Solo el dueño puede liberar
-  if(currentCell.dataset.user !== currentUser){
-    alert("Solo puedes liberar la casilla que tú ocupaste");
-    return;
-  }
-
   const cellId = currentCell.dataset.band.replace('-','_');
-  db.ref("bands/"+cellId).remove()
-    .then(()=>{
-      currentCell.innerHTML='';
-      currentCell.dataset.user='';
-      currentCell.dataset.mode='';
-      currentCell.dataset.freq='';
-      currentCell.classList.remove('activo');
-      closeModal();
-    })
-    .catch(err=>alert("Error al liberar la banda: "+err.message));
+  db.ref("bands/"+cellId).remove().then(()=>{
+    currentCell.innerHTML='';
+    currentCell.dataset.mode='';
+    currentCell.dataset.freq='';
+    currentCell.classList.remove('activo');
+    closeModal();
+  });
 }
 
-function closeModal(){
-  const modal = document.getElementById("modal");
-  const modeButtons = document.getElementById("modeButtons");
+function closeModal(){document.getElementById("modal").style.display='none';}
 
-  if(modal) modal.style.display = "none";
-  if(modeButtons) modeButtons.style.display = "block";
-
-  currentCell = null;
-  currentMode = "";
-}
-
-
-
-// ===== UTC =====
-setInterval(()=>{
-  const now=new Date();
-  document.getElementById("utc").innerText="Hora UTC: "+
-    now.getUTCHours().toString().padStart(2,'0')+":"+
-    now.getUTCMinutes().toString().padStart(2,'0')+":"+
-    now.getUTCSeconds().toString().padStart(2,'0');
-},1000);
-
-// ===== CARGAR DATOS EXISTENTES =====
-auth.onAuthStateChanged(user=>{
-  if(user){
-    currentUID=user.uid;
-    db.ref("users/"+user.uid).once("value").then(s=>{currentUser=s.val().indicativo; document.getElementById("loginOverlay").style.display='none';});
-  }
-});
-
-db.ref("bands").on("value",snapshot=>{
-  const data=snapshot.val()||{};
+// CARGAR DATOS AL INICIAR
+db.ref("bands").on("value", snapshot=>{
+  const data = snapshot.val()||{};
   document.querySelectorAll("td").forEach(td=>{
     if(td.dataset.band){
-      const key=td.dataset.band.replace('-','_');
+      const key = td.dataset.band.replace('-','_');
       if(data[key]){
-  td.innerHTML = `<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
-  td.dataset.user = data[key].user;   // 🔴 CLAVE
-  td.dataset.mode = data[key].mode;
-  td.dataset.freq = data[key].freq;
-  td.classList.add('activo');
-}else{
-  td.innerHTML='';
-  td.dataset.user='';                 // 🔴 LIMPIAR
-  td.dataset.mode='';
-  td.dataset.freq='';
-  td.classList.remove('activo');
-}
-
+        td.innerHTML=`<strong>${data[key].user}</strong><br><em>${data[key].mode}</em><br>${data[key].freq} MHz`;
+        td.dataset.mode=data[key].mode;
+        td.dataset.freq=data[key].freq;
+        td.classList.add('activo');
+      } else {
+        td.innerHTML=''; td.dataset.mode=''; td.dataset.freq=''; td.classList.remove('activo');
+      }
     }
   });
 });
+
+// HORA UTC
+setInterval(()=>{
+  const now = new Date();
+  document.getElementById("utc").innerText = "Hora UTC: "+now.getUTCHours().toString().padStart(2,'0')+":"+now.getUTCMinutes().toString().padStart(2,'0')+":"+now.getUTCSeconds().toString().padStart(2,'0');
+},1000);
 </script>
 
 </body>
 </html>
-
-
-
-
-
-

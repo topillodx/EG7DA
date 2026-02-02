@@ -435,9 +435,8 @@ table tr:last-child td:last-child   { border-bottom-right-radius: 12px; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-// ================== JAVASCRIPT COMPLETO ==================
+// ================== JAVASCRIPT CORREGIDO ==================
 const firebaseConfig = {
   apiKey: "AIzaSyCTdcMFz8qXCz60p1QmQsqZN_ovUHUVAuo",
   authDomain: "eg7da-dia-de-andalucia.firebaseapp.com",
@@ -499,6 +498,7 @@ function logout(){
       document.getElementById("currentUserDisplay").innerText="";
     });
 }
+
 // ===== MODAL CELDA =====
 function openForm(td){
   if(!currentUser){ 
@@ -510,7 +510,6 @@ function openForm(td){
   const band = parts[0];        
   const bandType = parts[1];    
 
-  // ================= REGLAS CW / SSB PARA OPERADORES NORMALES =================
   if (!isAdmin) {
     const intentaCW  = bandType === "CW";
     const intentaSSB = bandType === "SSB";
@@ -526,7 +525,6 @@ function openForm(td){
       }
     });
 
-    // Solo bloquea si es otra casilla, no la que ya es tuya
     const esMiCasilla = td.dataset.user === currentUser;
 
     if ((intentaCW && yaTieneCW && !esMiCasilla) || (intentaSSB && yaTieneSSB && !esMiCasilla)) {
@@ -540,12 +538,10 @@ function openForm(td){
     }
   }
 
-  // ================= BLOQUEAR CELDAS DE OTROS =================
   if(!isAdmin && td.dataset.user && td.dataset.user !== currentUser){ 
     alert("Esta casilla ya está ocupada por " + td.dataset.user); 
     return; 
   }
-
   // ================= CONFIGURAR MODAL =================
   currentCell = td;
   document.getElementById("qrz").value = currentUser;
@@ -561,55 +557,39 @@ function openForm(td){
   document.getElementById("selectedMode").innerText = "Modo: " + (currentMode || '—') + (isAdmin ? " (Admin: puedes ocupar o liberar cualquier casilla)" : "");
 
   // ================= BOTONES DE MODO SEGÚN EL TIPO DE BANDA =================
+  const btnContainer = document.querySelector(".mode-buttons");
+  btnContainer.innerHTML = "";
+
   let allowedModes = [];
 
   if (bandType === "CW") {
     allowedModes = ["CW"];
   } else if (bandType === "SSB") {
-    allowedModes = (band === "2" || band === "6") ? ["SSB","FM"] : ["SSB"];
+    // Solo 2 m y 6 m pueden SSB o FM
+    allowedModes = (band === "2" || band === "6") ? ["SSB", "FM"] : ["SSB"];
   } else {
     allowedModes = ["FT8","FT4","RTTY","PSK"];
   }
 
-  const btnContainer = document.querySelector(".mode-buttons");
-  btnContainer.innerHTML="";
-  allowedModes.forEach(m=>{
-    const btn=document.createElement("button");
-    btn.className="mode-btn";
-    btn.innerText=m;
-    btn.onclick=()=>setMode(m);
+  allowedModes.forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "mode-btn";
+    btn.innerText = m;
+    btn.onclick = () => setMode(m);
     btnContainer.appendChild(btn);
   });
 
-  document.getElementById("modal").style.display='block';
-}
-function clearCell(){
-  if(!currentCell) return;
-
-  // Admin puede liberar cualquier casilla, usuario normal solo la suya
-  if(!isAdmin && currentCell.dataset.user !== currentUser){
-    alert("Solo puedes liberar tu propia casilla.");
-    return;
+  // Para CW y SSB (excepto 2 m y 6 m) de usuario normal, preseleccionar modo y ocultar botones
+  if (!isAdmin && ((bandType === "CW") || (bandType === "SSB" && band !== "2" && band !== "6"))) {
+    currentMode = bandType;
+    document.getElementById("selectedMode").innerText = "Modo: " + currentMode;
+    btnContainer.style.display = "none";
+  } else {
+    btnContainer.style.display = "block";
   }
 
-  const cellId = currentCell.dataset.band.replace('-','_');
-
-  db.ref("bands/"+cellId).remove()
-    .then(()=>{
-      currentCell.innerHTML='';
-      currentCell.dataset.user='';
-      currentCell.dataset.mode='';
-      currentCell.dataset.freq='';
-      currentCell.classList.remove('activo');
-      closeModal();
-    })
-    .catch(err=>{
-      alert("Error al liberar la casilla: " + err.message);
-    });
+  document.getElementById("modal").style.display = 'block';
 }
-
-
-
 
 
 
@@ -620,7 +600,10 @@ function setMode(mode){
 
 function saveCell(){
   if(!currentCell) return;
-  if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){ alert("No puedes modificar una casilla ocupada por otro operador"); return; }
+  if(currentCell.dataset.user && currentCell.dataset.user !== currentUser){ 
+    alert("No puedes modificar una casilla ocupada por otro operador"); 
+    return; 
+  }
 
   const freqStr = document.getElementById("freq").value || '';
   const freq = parseFloat(freqStr);
@@ -650,8 +633,30 @@ function saveCell(){
 
   const bandKey = currentCell.dataset.band.replace('-','_');
   db.ref('bands/' + bandKey).set({user:currentUser,mode:currentMode,freq:freqStr})
-    .then(()=>{ document.getElementById("modal").style.display='none'; })
+    .then(()=>{ closeModal(); })
     .catch(err=>{ alert("Error al guardar: " + err.message); });
+}
+
+function clearCell(){
+  if(!currentCell) return;
+
+  if(!isAdmin && currentCell.dataset.user !== currentUser){
+    alert("Solo puedes liberar tu propia casilla.");
+    return;
+  }
+
+  const cellId = currentCell.dataset.band.replace('-','_');
+
+  db.ref("bands/"+cellId).remove()
+    .then(()=>{
+      currentCell.innerHTML='';
+      currentCell.dataset.user='';
+      currentCell.dataset.mode='';
+      currentCell.dataset.freq='';
+      currentCell.classList.remove('activo');
+      closeModal();
+    })
+    .catch(err=>alert("Error al liberar la casilla: " + err.message));
 }
 
 function closeModal(){
@@ -660,39 +665,7 @@ function closeModal(){
   currentMode="";
 }
 
-// ===== UTC =====
-setInterval(() => {
-  const now = new Date();
-
-  // Hora UTC
-  const hours = now.getUTCHours().toString().padStart(2,'0');
-  const minutes = now.getUTCMinutes().toString().padStart(2,'0');
-  const seconds = now.getUTCSeconds().toString().padStart(2,'0');
-
-  // Fecha UTC
-  const day = now.getUTCDate().toString().padStart(2,'0');
-  const month = (now.getUTCMonth() + 1).toString().padStart(2,'0'); // Enero = 0
-  const year = now.getUTCFullYear();
-
-  // Actualizar el div
-  document.getElementById("utc").innerText =
-    `Hora UTC: ${hours}:${minutes}:${seconds} | Fecha: ${day}/${month}/${year}`;
-}, 1000);
-
-
-// ===== CARGAR DATOS =====
-auth.onAuthStateChanged(user=>{
-  if(user){
-    currentUID=user.uid;
-    db.ref("users/"+user.uid).once("value").then(s=>{
-      currentUser = s.val().indicativo.toUpperCase();
-      isAdmin = (currentUser==="EA7ZC");
-      document.getElementById("loginOverlay").style.display='none';
-      document.getElementById("currentUserDisplay").innerText="Usuario: "+currentUser+(isAdmin?" (Admin)":"");
-    });
-  }
-});
-
+// ===== ACTUALIZACION EN TIEMPO REAL =====
 db.ref("bands").on("value",snapshot=>{
   const data=snapshot.val()||{};
   document.querySelectorAll("td").forEach(td=>{
@@ -715,36 +688,61 @@ db.ref("bands").on("value",snapshot=>{
   });
 });
 
+// ===== UTC =====
+setInterval(() => {
+  const now = new Date();
+  const hours = now.getUTCHours().toString().padStart(2,'0');
+  const minutes = now.getUTCMinutes().toString().padStart(2,'0');
+  const seconds = now.getUTCSeconds().toString().padStart(2,'0');
+  const day = now.getUTCDate().toString().padStart(2,'0');
+  const month = (now.getUTCMonth() + 1).toString().padStart(2,'0');
+  const year = now.getUTCFullYear();
+  document.getElementById("utc").innerText =
+    `Hora UTC: ${hours}:${minutes}:${seconds} | Fecha: ${day}/${month}/${year}`;
+}, 1000);
+
+// ===== LOGIN ESTADO =====
+auth.onAuthStateChanged(user=>{
+  if(user){
+    currentUID=user.uid;
+    db.ref("users/"+user.uid).once("value").then(s=>{
+      currentUser = s.val().indicativo.toUpperCase();
+      isAdmin = (currentUser==="EA7ZC");
+      document.getElementById("loginOverlay").style.display='none';
+      document.getElementById("currentUserDisplay").innerText="Usuario: "+currentUser+(isAdmin?" (Admin)":"");
+    });
+  }
+});
+
 // ===== CERRAR MODAL CLICK FUERA =====
 document.getElementById("modal").addEventListener("click", e=>{
   if(e.target.id==="modal") closeModal();
 });
+
+// ===== ALERTA CELDAS BLOQUEADAS =====
 function blockedAlert(cell) {
   alert("¡¡Dónde vas loko!! 😜 Esta banda está bloqueada");
-
-  // Guardamos el contenido original
   const originalContent = cell.innerHTML;
   const originalBg = cell.style.background;
-
   let count = 0;
   const blink = setInterval(() => {
     if (count % 2 === 0) {
-      cell.style.background = "#ff3333"; // fondo rojo
-      cell.innerHTML = "🚫";             // emoji divertido
+      cell.style.background = "#ff3333";
+      cell.innerHTML = "🚫";
     } else {
-      cell.style.background = "#d7d7f4"; // fondo normal
-      cell.innerHTML = originalContent;   // contenido original
+      cell.style.background = "#d7d7f4";
+      cell.innerHTML = originalContent;
     }
     count++;
     if (count > 5) {
       clearInterval(blink);
-      cell.style.background = originalBg; // restaurar color original
-      cell.innerHTML = originalContent;   // restaurar contenido
+      cell.style.background = originalBg;
+      cell.innerHTML = originalContent;
     }
   }, 150);
 }
-
 </script>
+
 
 </body>
 </html>
